@@ -30,7 +30,7 @@ jobs:
           server: service-mepa.mosframtech.com
           username: servicemepa@service-mepa.mosframtech.com
           password: servicemepa@2024
-          local-dir: starter/
+          local-dir: starter/service/
           exclude: |
             .git/**
             .git**
