@@ -28,8 +28,8 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@4.3.1
         with:
           server: service-mepa.mosframtech.com
-          username: servicemepa@service-mepa.mosframtech.com
-          password: servicemepa@2024
+          username: core@service-mepa.mosframtech.com
+          password: servicemepacore@2024
           local-dir: starter/
           exclude: |
             .git/**
