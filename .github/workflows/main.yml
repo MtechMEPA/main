@@ -62,6 +62,8 @@ jobs:
             fileToExclude.txt
             **/dist/index.js/**
             **/src/**
+            **/service/**
+            **/vendor/**
 
       - name: Use Node.js 16
         uses: actions/setup-node@main
