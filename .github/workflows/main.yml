@@ -27,8 +27,8 @@ jobs:
       - name: Sync files to service
         uses: SamKirkland/FTP-Deploy-Action@4.3.1
         with:
-          server: servicemepa@service-mepa.mosframtech.com
-          username: servicemepa
+          server: service-mepa.mosframtech.com
+          username: servicemepa@service-mepa.mosframtech.com
           password: servicemepa@2024
           local-dir: starter/
           exclude: |
@@ -49,8 +49,8 @@ jobs:
       - name: Sync files to publics
         uses: SamKirkland/FTP-Deploy-Action@4.3.1
         with:
-          server: servicemepa@service-mepa.mosframtech.com
-          username: servicemepa
+          server: service-mepa.mosframtech.com
+          username: servicemepa@service-mepa.mosframtech.com
           password: servicemepa@2024
           local-dir: starter/public/
           exclude: |
