@@ -1,0 +1,93 @@
+name: Workflow CI/CD
+
+# Control when the action will run
+
+on:
+  push: 
+     branches: 
+        - main
+  
+  # Allow you to run this workflow manualy from the actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build ⛏
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main  
+  Test:
+    runs-on: ubuntu-latest
+    environment: Test
+    steps: 
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: Sync files to service
+        uses: SamKirkland/FTP-Deploy-Action@4.3.1
+        with:
+          server: service.test.mailtrackminerba.com
+          username: core-ftp-service-test-minerba-2023@service.test.mailtrackminerba.com
+          password: core-ftp-service-test-minerba-2023
+          local-dir: starter/
+          exclude: |
+            .git/**
+            .git**
+            .git*/**
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            fileToExclude.txt
+            **/dist/index.js/**
+            **/tests/**
+            **/public/**
+            **/src/**
+            **/service/**
+            **/vendor/**
+
+      - name: Sync files to publics
+        uses: SamKirkland/FTP-Deploy-Action@4.3.1
+        with:
+          server: service.test.mailtrackminerba.com
+          username: ftp-service-test-minerba-2023@service.test.mailtrackminerba.com
+          password: ftp-service-test-minerba-2023
+          local-dir: starter/public/
+          exclude: |
+            .git/**
+            .git**
+            .git*/**
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            fileToExclude.txt
+            **/dist/index.js/**
+            **/src/**
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@main
+        with:
+          node-version: '16'
+
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          npm i --legacy-peer-deps
+          npm run build
+
+      - name: Sync files to view
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: test.mailtrackminerba.com
+          username: ftp-ui-test-minerba-2023@test.mailtrackminerba.com
+          password: ftp-ui-test-minerba-2023
+          local-dir: dist/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/public/**
+            **/src/**
+            **/starter/**
+            **/service/**
+            
