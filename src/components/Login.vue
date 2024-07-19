@@ -4,9 +4,9 @@
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
             <v-card-title class="justify-center">
                 <v-spacer></v-spacer>
-                <img src="../assets/login-mail-track.png" alt="" srcset="" width="20%">
+                <img src="../assets/logomepa.png" alt="" srcset="" width="20%">
                 <div class="mx-2">
-                    Login <br>Mail Track Minerba
+                    Login <br>Meki Nawipa - MEPA
                 </div>
                 <v-spacer></v-spacer>
             </v-card-title>

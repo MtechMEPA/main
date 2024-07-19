@@ -111,7 +111,7 @@ export default {
     $route: {
       immediate: true,
       handler(to, from) {
-        document.title = to.meta.title || 'Mail Track Minerba';
+        document.title = to.meta.title || 'Meki Nawipa - MEPA';
       }
     },
   },
