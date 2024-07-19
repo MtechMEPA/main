@@ -37,7 +37,7 @@
       </v-bottom-navigation>
     </div>
     <v-col class="text-center" cols="12">
-      {{ new Date().getFullYear() }} — <strong>Mail Track Minerba</strong>
+      {{ new Date().getFullYear() }} — <strong>Meki Nawipa - MEPA</strong>
       <div><small>v1.0</small></div>
     </v-col>
   </v-footer>
