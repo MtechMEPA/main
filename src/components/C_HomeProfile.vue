@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col lg="12" class="text--disabled">
-            <h1 class="font-weight-medium">Welcome to Mail Track Minerba</h1>
+            <h1 class="font-weight-medium">Selamat datang di Meki Nawipa - MEPA</h1>
             <span class="description" :color="color">Sebuah tools yang dirancang untuk membantu proses penelusuran
                 (tracking) terhadap persuratan di lingkungan internal Direktorat Jenderal Mineral dan Batubara</span>
 
@@ -105,12 +105,12 @@
                     <v-data-table v-show="search != '' ? true : false" multi-sort :headers="headers"
                         class="mx-3 table-style" :items="listData" :search="search" :loading="isLoading"
                         :loading-text="isLoading ? 'Loading... Please wait' : ''" @click:row="rowClick" :footer-props="{
-                            showFirstLastPage: true,
-                            firstIcon: 'mdi-arrow-collapse-left',
-                            lastIcon: 'mdi-arrow-collapse-right',
-                            prevIcon: 'mdi-minus',
-                            nextIcon: 'mdi-plus'
-                        }">
+                showFirstLastPage: true,
+                firstIcon: 'mdi-arrow-collapse-left',
+                lastIcon: 'mdi-arrow-collapse-right',
+                prevIcon: 'mdi-minus',
+                nextIcon: 'mdi-plus'
+            }">
                         <template v-slot:item.num="{ index, item }">
                             {{ index + 1 }}
                         </template>
@@ -161,7 +161,8 @@
                                         <v-timeline dense align-top>
 
                                             <v-timeline-item v-for="itemDetail, index in historyListData.header"
-                                                :key="index" color="cyan darken-2" icon="mdi-check" size="small" fill-dot>
+                                                :key="index" color="cyan darken-2" icon="mdi-check" size="small"
+                                                fill-dot>
                                                 <v-card class="elevation-3">
                                                     <v-card-title class="text-h6">
                                                         <v-row>
@@ -171,8 +172,8 @@
                                                             <v-col md="5" class="text-end">
                                                                 <v-chip medium color="default" outlined class="ma-2">
                                                                     {{
-                                                                        momentJsFormating(itemDetail.createdDate, 1)
-                                                                    }}
+                momentJsFormating(itemDetail.createdDate, 1)
+            }}
                                                                 </v-chip>
                                                                 <v-chip medium color="default" outlined class="ma-2">
                                                                     {{ itemDetail.typeText }}
@@ -182,8 +183,8 @@
                                                     </v-card-title>
                                                     <v-card-text class="font-weight-medium">
                                                         <div v-if="itemDetail.menu == 'NADINE'"> {{
-                                                            itemDetail.descriptionAction
-                                                        }}</div>
+                itemDetail.descriptionAction
+            }}</div>
                                                         <div v-else>
                                                             {{ itemDetail.descriptionAction }}
                                                             <ul>
@@ -198,7 +199,8 @@
                                                                     v-if="itemDetail.updatedDate != ''">*
                                                                     Catatan terakhir
                                                                     diubah pada {{
-                                                                        momentJsFormating(itemDetail.updatedDate, 2) }} </small>
+                momentJsFormating(itemDetail.updatedDate, 2) }}
+                                                                </small>
                                                                 <i>
                                                                     <p> {{ itemDetail.catatan }}</p>
                                                                 </i>
@@ -244,15 +246,17 @@
                                                             <v-list-item-subtitle class="my-1">Tgl.Penerimaan
                                                             </v-list-item-subtitle>
                                                             <v-list-item-title> {{
-                                                                momentJsFormating(detailDataRow.tglPenerimaanDisplayText, 2)
-                                                            }}
+                momentJsFormating(detailDataRow.tglPenerimaanDisplayText,
+                    2)
+            }}
                                                             </v-list-item-title>
                                                         </div>
                                                         <div class="my-3">
                                                             <v-list-item-subtitle class="my-1">Tgl.Surat
                                                             </v-list-item-subtitle>
-                                                            <v-list-item-title> {{ momentJsFormating(detailDataRow.tglSurat,
-                                                                2) }}
+                                                            <v-list-item-title> {{
+                    momentJsFormating(detailDataRow.tglSurat,
+                        2) }}
                                                             </v-list-item-title>
                                                         </div>
                                                         <div class="my-3">
@@ -262,7 +266,8 @@
                                                             </v-list-item-title>
                                                         </div>
                                                         <div class="my-3">
-                                                            <v-list-item-subtitle class="my-1"> Dari </v-list-item-subtitle>
+                                                            <v-list-item-subtitle class="my-1"> Dari
+                                                            </v-list-item-subtitle>
                                                             <v-list-item-title> {{ detailDataRow.dari }}
                                                             </v-list-item-title>
                                                         </div>

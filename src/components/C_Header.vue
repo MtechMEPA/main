@@ -1,4 +1,3 @@
- 
 <template>
     <div>
         <v-app-bar color="transparent" elevation="0" height="auto">
@@ -8,22 +7,22 @@
                     <v-row>
                         <!-- logo here -->
                         <v-img alt="Vuetify Name" v-if="settings.screenSize.type.islg" contain
-                            src="../assets/login-mail-track.png" width="100%" max-width="30%" />
+                            src="../assets/logomepa.png" width="100%" max-width="30%" />
 
                         <v-img alt="Vuetify Name" v-if="settings.screenSize.type.ismd" max-width="10%" contain
-                            src="../assets/login-mail-track.png" width="100%" />
+                            src="../assets/logomepa.png" width="100%" />
 
                         <v-img alt="Vuetify Name" v-if="settings.screenSize.type.isxs" contain
-                            src="../assets/login-mail-track.png" width="100%" max-width="15%" />
+                            src="../assets/logomepa.png" width="100%" max-width="15%" />
                         <v-spacer></v-spacer>
                         <template>
                             <div class="my-5">
                                 <v-btn icon @click="toggleDarkMode">
                                     <v-icon>
                                         {{
-                                            $vuetify.theme.dark ? 'mdi-white-balance-sunny' :
-                                            'mdi-moon-waxing-crescent'
-                                        }}
+                            $vuetify.theme.dark ? 'mdi-white-balance-sunny' :
+                                'mdi-moon-waxing-crescent'
+                        }}
                                     </v-icon>
                                 </v-btn>
                             </div>
@@ -33,7 +32,7 @@
                 <div class="d-none d-lg-block">
                     <v-row class="mt-2">
                         <v-col md="4" class="text-left pt-0 pb-0">
-                            <h3>Mail Track Minerba</h3>
+                            <h3>Meki Nawipa - MEPA</h3>
                         </v-col>
                         <v-col md="8" class="text-right  pt-0 pb-0">
                             <v-row>
@@ -46,9 +45,9 @@
                                     <v-btn small icon @click="toggleDarkMode" class="mx-5">
                                         <v-icon>
                                             {{
-                                                $vuetify.theme.dark ? 'mdi-white-balance-sunny' :
-                                                'mdi-moon-waxing-crescent'
-                                            }}
+                            $vuetify.theme.dark ? 'mdi-white-balance-sunny' :
+                                'mdi-moon-waxing-crescent'
+                        }}
                                         </v-icon>
                                     </v-btn>
                                     <v-menu transition="slide-x-transition" bottom right offset-y>
@@ -59,7 +58,8 @@
                                         </template>
                                         <v-list>
                                             <v-list-item to="/profile">
-                                                <v-icon class="pr-3">mdi-account-cog-outline</v-icon>Profile</v-list-item>
+                                                <v-icon
+                                                    class="pr-3">mdi-account-cog-outline</v-icon>Profile</v-list-item>
                                             <v-list-item to="/logout"> <v-icon class="pr-3">mdi-logout-variant</v-icon>
                                                 Logout</v-list-item>
                                         </v-list>
@@ -70,7 +70,7 @@
                         <v-col md="3">
                             <router-link to="/">
                                 <v-img alt="Vuetify Name" class="shrink mt-1 hidden-sm-and-down" contain
-                                    src="../assets/login-mail-track.png" width="20%" />
+                                    src="../assets/logomepa.png" width="20%" />
                             </router-link>
 
                         </v-col>
@@ -89,7 +89,7 @@
                         <v-alert dense dark close-icon="mdi-close-circle-outline" color="cyan darken-1"
                             v-show="alertSuccessLogin" elevation="2" icon="mdi-information-outline" border="left"
                             dismissible transition="scale-transition">
-                            Hi <strong>{{ users.name }}</strong> Welcome to Mail Track Minerba
+                            Hi <strong>{{ users.name }}</strong> Selamat datang di Meki Nawipa - MEPA
                         </v-alert>
                     </div>
                 </div>
@@ -316,4 +316,4 @@ export default {
     components: {
     },
 }
-</script> 
+</script>
