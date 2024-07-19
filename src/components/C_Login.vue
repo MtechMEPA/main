@@ -4,9 +4,12 @@
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
             <v-card-title class="justify-center">
                 <v-spacer></v-spacer>
-                <img src="../assets/login-mail-track.png" alt="" srcset="" width="20%">
-                <div class="mx-2">
-                    Login <br>Mail Track Minerba
+
+                <div class="col-12">
+                    <center>
+                        <img src="../assets/logomepa.png" alt="" srcset="" width="60%">
+
+                    </center>
                 </div>
                 <v-spacer></v-spacer>
             </v-card-title>
@@ -20,7 +23,8 @@
                     </v-alert>
                 </div>
 
-                <v-text-field v-model="nip" :error-messages="nipErrors" label="NIP" required @input="$v.nip.$touch()"></v-text-field>
+                <v-text-field v-model="nip" :error-messages="nipErrors" label="Nomor Anggota" required
+                    @input="$v.nip.$touch()"></v-text-field>
                 <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" required
                     @input="$v.password.$touch()" @blur="$v.password.$touch()" :type="show1 ? 'text' : 'password'"
                     name="input-10-1" label="Password" :error-messages="passwordErrors" counter
@@ -69,7 +73,7 @@ export default {
         }
     },
     methods: {
-        async login() { 
+        async login() {
             this.isCompletedLoad = true;
             const param = { "nip": this.nip, "password": this.password }
             await axios.post(process.env.VUE_APP_SERVICE_URL + "otentikasi", param).then(async res => {

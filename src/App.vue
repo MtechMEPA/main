@@ -99,7 +99,7 @@ export default {
           level: levelLookup,
           desc: descLookup,
           action: actionLookup,
-          filePrefix:filePrefixLookup
+          filePrefix: filePrefixLookup
         };
         this.$store.dispatch('lookups', mapping);
         status = true;
@@ -132,15 +132,17 @@ export default {
 }
 
 .hero {
-  background: url('./assets/minerbalogin.jpg');
-  background-size: cover;
-  background-position-y: bottom;
+  background: url('./assets/mepaheader.jpg');
+  background-size: auto;
+  background-position-y: center;
+
+  background-position-x: left;
   height: 45vh;
 }
 
 .heroHome {
-  background: url('./assets/DashboardMailtracking.jpg');
+  background: url('./assets/mepaheader.jpg');
   background-size: cover;
-  background-position-y: bottom;
+  background-position-y: top;
 }
 </style>
