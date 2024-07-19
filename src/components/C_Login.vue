@@ -128,8 +128,8 @@ export default {
         nipErrors() {
             const errors = []
             if (!this.$v.nip.$dirty) return errors
-            !this.$v.nip.maxLength && errors.push('NIP must be at most ' + maxlength + ' characters long')
-            !this.$v.nip.required && errors.push('NIP is required.')
+            !this.$v.nip.maxLength && errors.push('Nomor Anggota must be at most ' + maxlength + ' characters long')
+            !this.$v.nip.required && errors.push('Nomor Anggota is required.')
             return errors
         },
         passwordErrors() {
