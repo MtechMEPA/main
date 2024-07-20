@@ -41,7 +41,7 @@ const routes = [
     }
   },
   {
-    path: '/registration/relawan',
+    path: '/registration-relawan',
     name: 'Registration Relawan',
     component: RegistrationRelawan,
     beforeEnter: (to, from, next) => {
@@ -56,7 +56,7 @@ const routes = [
     }
   },
   {
-    path: '/registration/pemilih',
+    path: '/registration-pemilih',
     name: 'Registration Pemilih',
     component: RegistrationPemilih,
     beforeEnter: (to, from, next) => {
