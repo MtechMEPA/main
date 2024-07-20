@@ -8,7 +8,6 @@ import vuetify from './plugins/vuetify';
 import httpClientAxios from './auth/http-common';
 import Modal from './components/C_GeneralDialog.vue';
 import VuePapaParse from 'vue-papa-parse';
-import './registerServiceWorker';
 import mixins from 'vuetify-multiple-draggable-dialogs';
 import {
   hmrDirtyComponents
