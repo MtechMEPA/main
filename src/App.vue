@@ -1,49 +1,75 @@
-<template color="transparent">
+<template>
   <v-app dark>
-    <v-system-bar v-show="false" class="px-0 py-0 my-0 my-0">
-      <img src="https://cdn.pixelfordinner.cloud/uploads/2014/11/voa_panel_sample-1024x0-c-f.jpg" width="100%" alt=""
-        height="200%">
-    </v-system-bar>
-    <div :class="!initDataAfterLogin ? 'hero' : ''">
-      <div v-if="!initDataAfterLogin">
-        <C_Login />
-      </div>
-      <div v-else>
-        <C_Header class="heroHome" />
-        <router-view />
-      </div>
-
-
-      <v-btn v-scroll="onScroll" v-show="fab" fab fixed small bottom right :color="settings.color" @click="toTop"
-        class="mb-15">
-        <v-icon color="white">mdi-chevron-up</v-icon>
-      </v-btn>
-
-      <v-container>
-        <Footers class="mt-15" />
-      </v-container>
-    </div>
-
+    <v-alert v-if="alertVisible" text dense close-icon="mdi-close-circle-outline" color="cyan darken-2" elevation="2"
+      icon="mdi-information-outline" border="left" dismissible transition="scale-transition"
+      @click:close="alertVisible = false">
+      {{ alertMessage }}
+    </v-alert>
+    <v-container>
+      <C_Header v-if="isLoggedIn" />
+      <router-view />
+      <Footers class="mt-15" />
+    </v-container>
   </v-app>
 </template>
 
 <script>
+import axios from 'axios';
 import C_Header from '@/components/C_Header.vue';
 import Footers from '@/components/C_Footer.vue';
-import C_Login from '@/components/C_Login.vue';
-import { mapState } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
   name: "app",
   data() {
     return {
-      isLogin: false,
-      isActiveWeb: true,
-      fab: false,
-      loading: false
+      alertVisible: false,
+      alertMessage: '',
+      isCompletedLoad: false
     };
   },
+  computed: {
+    ...mapGetters(['isLoggedIn', 'username']),
+    isLogin() {
+      var status = false;
+      if (localStorage.getItem('token') != null) {
+        status = true;
+      }
+      console.log(status);
+      return status;
+    },
+    initDataAfterLogin() {
+      return localStorage.getItem('successLogin') === 'true';
+    }
+  },
   methods: {
+    async logout() {
+      this.isCompletedLoad = true;
+      try {
+        await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/logout");
+
+        // Clear localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('successLogin');
+
+        // Set alert response
+        this.alertMessage = "Logout berhasil";
+        this.alertVisible = true;
+
+        // Redirect to login page
+        setTimeout(() => {
+          this.$router.push("/login");
+        }, 1500); // Delay for alert visibility
+
+      } catch (error) {
+        // Handle error
+        this.alertMessage = "Logout gagal";
+        this.alertVisible = true;
+        console.log(error);
+      } finally {
+        this.isCompletedLoad = false;
+      }
+    },
     onScroll(e) {
       if (typeof window === 'undefined') return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
@@ -53,58 +79,11 @@ export default {
       this.$vuetify.goTo(0)
     },
     isMobile() {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true
-      } else {
-        return false
-      }
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     },
     setMobileDeviceSettings() {
-
-      const datas = {
-        isMobileData: this.isMobile()
-      }
+      const datas = { isMobileData: this.isMobile() };
       this.$store.dispatch('settings', datas);
-    }
-  },
-
-  computed: {
-    ...mapState(['settings', 'lookups']),
-    initDataAfterLogin() {
-      var status = false;
-      if (localStorage.getItem('isLogin') == 'true') {
-        var lookupData = JSON.parse(localStorage.getItem('lookups'));
-        // mapping header
-        var headerLookup = lookupData.filter(val => val.type == "HEADER").map(result => { return result; });
-        // mapping status
-        var statusLookup = lookupData.filter(val => val.type == "STATUS").map(result => { return result; });
-        // mapping type
-        var typeLookup = lookupData.filter(val => val.type == "TYPE").map(result => { return result; });
-        // mapping type
-        var accessLookup = lookupData.filter(val => val.type == "ACCESS").map(result => { return result; });
-        // mapping level
-        var levelLookup = lookupData.filter(val => val.type == "LEVEL").map(result => { return result; });
-        // mapping desc
-        var descLookup = lookupData.filter(val => val.type == "DESC").map(result => { return result; });
-        // mapping actionFollowup
-        var actionLookup = lookupData.filter(val => val.type == "ACTION").map(result => { return result; });
-        // mapping filePrefixLookup
-        var filePrefixLookup = lookupData.filter(val => val.type == "FILEPREFIX").map(result => { return result; });
-
-        var mapping = {
-          header: headerLookup,
-          status: statusLookup,
-          type: typeLookup,
-          access: accessLookup,
-          level: levelLookup,
-          desc: descLookup,
-          action: actionLookup,
-          filePrefix: filePrefixLookup
-        };
-        this.$store.dispatch('lookups', mapping);
-        status = true;
-      }
-      return status;
     }
   },
   watch: {
@@ -113,16 +92,18 @@ export default {
       handler(to, from) {
         document.title = to.meta.title || 'Meki Nawipa - MEPA';
       }
-    },
+    }
   },
   created() {
     this.setMobileDeviceSettings();
+    if (this.initDataAfterLogin) {
+      // Optionally do something after login
+    }
   },
   components: {
     C_Header,
-    Footers,
-    C_Login
-  },
+    Footers
+  }
 }
 </script>
 
@@ -133,16 +114,9 @@ export default {
 
 .hero {
   background: url('./assets/mepaheader.jpg');
-  background-size: auto;
+  background-size: cover;
   background-position-y: center;
-
   background-position-x: left;
   height: 45vh;
-}
-
-.heroHome {
-  background: url('./assets/mepaheader.jpg');
-  background-size: cover;
-  background-position-y: top;
 }
 </style>

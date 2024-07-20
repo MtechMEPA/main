@@ -35,9 +35,8 @@ $routes->group('attachment', ['filter' => 'jwt:relawan,pemilih'], function ($rou
     $routes->post('upload', 'Attachment::uploadAttachment');
 });
 
-$routes->group('search', ['filter' => 'jwt:relawan,pemilih'], function ($routes) {
-    $routes->post('relawan', 'Relawan::getUsers');
-    $routes->post('pemilih', 'Pemilih::getUsers');
+$routes->group('search', ['filter' => 'jwt'], function ($routes) {
+    $routes->post('user', 'Auth::getUsers');
 });
 
 if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {

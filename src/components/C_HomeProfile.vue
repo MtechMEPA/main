@@ -3,7 +3,7 @@
         <v-col lg="12" class="text--disabled">
             <h1 class="font-weight-medium">Selamat datang di Meki Nawipa - MEPA</h1>
             <span class="description" :color="color">Sebuah tools yang dirancang untuk membantu proses penelusuran
-                (tracking) terhadap persuratan di lingkungan internal Direktorat Jenderal Mineral dan Batubara</span>
+                data Relawan dan Pemilih Loyal Meki Nawipa</span>
 
         </v-col>
         <v-col cols="4">
@@ -247,16 +247,16 @@
                                                             </v-list-item-subtitle>
                                                             <v-list-item-title> {{
                 momentJsFormating(detailDataRow.tglPenerimaanDisplayText,
-                    2)
-            }}
+                                                                2)
+                                                                }}
                                                             </v-list-item-title>
                                                         </div>
                                                         <div class="my-3">
                                                             <v-list-item-subtitle class="my-1">Tgl.Surat
                                                             </v-list-item-subtitle>
                                                             <v-list-item-title> {{
-                    momentJsFormating(detailDataRow.tglSurat,
-                        2) }}
+                                                                momentJsFormating(detailDataRow.tglSurat,
+                                                                2) }}
                                                             </v-list-item-title>
                                                         </div>
                                                         <div class="my-3">

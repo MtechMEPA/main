@@ -1,5 +1,6 @@
 <template>
-  <v-text-field v-bind="textFieldProps" :value="modelValue" @input="$emit('update:modelValue', $event)"></v-text-field>
+  <v-text-field v-bind="textFieldProps" :value="modelValue" @input="updateValue" @blur="triggerValidation">
+  </v-text-field>
 </template>
 
 <script>
@@ -55,6 +56,14 @@ export default {
         counter: this.counter,
         name: this.name,
       };
+    },
+  },
+  methods: {
+    updateValue(event) {
+      this.$emit('update:modelValue', event);
+    },
+    triggerValidation() {
+      this.$emit('blur');
     },
   },
 };

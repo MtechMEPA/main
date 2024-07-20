@@ -4,11 +4,9 @@
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
             <v-card-title class="justify-center">
                 <v-spacer></v-spacer>
-
                 <div class="col-12">
                     <center>
                         <img src="../assets/logomepa.png" alt="" srcset="" width="60%">
-
                     </center>
                 </div>
                 <v-spacer></v-spacer>
@@ -23,13 +21,15 @@
                     </v-alert>
                 </div>
 
-                <v-text-field v-model="nip" :error-messages="nipErrors" label="Nomor Anggota" required
-                    @input="$v.nip.$touch()"></v-text-field>
-                <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" required
+                <TextFieldComponent v-model="nip" :error-messages="nipErrors" label="Nomor Anggota" required
+                    @input="$v.nip.$touch()">
+                </TextFieldComponent>
+
+                <TextFieldComponent v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" required
                     @input="$v.password.$touch()" @blur="$v.password.$touch()" :type="show1 ? 'text' : 'password'"
                     name="input-10-1" label="Password" :error-messages="passwordErrors" counter
-                    @click:append="show1 = !show1"></v-text-field>
-
+                    @click:append="show1 = !show1">
+                </TextFieldComponent>
             </v-card-text>
 
             <v-card-actions>
@@ -50,8 +50,14 @@ import axios from 'axios';
 import { validationMixin } from 'vuelidate'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { mapGetters } from 'vuex';
+import TextFieldComponent from '@/components/TextFieldComponent.vue';  // Path to your component
+
 var maxlength = 18;
 export default {
+    name: 'LoginComponent',
+    components: {
+        TextFieldComponent,
+    },
     mixins: [validationMixin],
     validations: {
         nip: { required, maxLength: maxLength(maxlength) },
@@ -140,7 +146,7 @@ export default {
             return errors
         },
         isValid() {
-            if ((this.nip != '' || this.nip.length > maxLength) && (this.password != '' || this.nip.length > maxLength)) {
+            if ((nip != '' || nip.length > maxLength) && (password != '' || nip.length > maxLength)) {
                 return false;
             } else {
                 return true;
