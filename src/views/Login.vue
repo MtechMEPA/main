@@ -47,10 +47,10 @@
                 </p>
                 <v-divider></v-divider>
                 <p> <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
-                        @click="navigateTo('registration/relawan')">
+                        @click="navigateTo('registration-relawan')">
                         Relawan
                     </v-btn> atau <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
-                        @click="navigateTo('registration/pemilih')">
+                        @click="navigateTo('registration-pemilih')">
                         Pemilih
                     </v-btn></p>
             </v-card-subtitle>
