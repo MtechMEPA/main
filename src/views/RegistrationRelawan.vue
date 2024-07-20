@@ -7,8 +7,8 @@
 
                 <div class="col-12">
                     <center>
-                        <img src="../assets/logomepa.png" alt="" srcset="" width="60%">
-                        <h2>Registrasi Relawan</h2>
+                        <img src="../assets/logomepa.png" alt="" srcset="" width="40%">
+                        <h2 color="blue-grey">Registrasi Relawan</h2>
                     </center>
                 </div>
                 <v-spacer></v-spacer>
@@ -23,16 +23,19 @@
                     </v-alert>
                 </div>
 
-                <v-text-field v-model="name" :error-messages="nameErrors" label="Name" required
-                    @input="$v.name.$touch()"></v-text-field>
-                <v-text-field v-model="email" :error-messages="emailErrors" label="Email" required
-                    @input="$v.email.$touch()"></v-text-field>
-                <v-text-field v-model="phone" :error-messages="phoneErrors" label="Phone" required
-                    @input="$v.phone.$touch()"></v-text-field>
-                <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" required
-                    @input="$v.password.$touch()" @blur="$v.password.$touch()" :type="show1 ? 'text' : 'password'"
-                    name="input-10-1" label="Password" :error-messages="passwordErrors" counter
-                    @click:append="show1 = !show1"></v-text-field>
+                <v-text-field outlined dense v-model="name" :error-messages="nameErrors" label="Nama" required
+                    @input="$v.name.$touch()" @blur="$v.name.$touch()"></v-text-field>
+
+                <v-text-field outlined dense v-model="email" :error-messages="emailErrors" label="Email" required
+                    @input="$v.email.$touch()" @blur="$v.email.$touch()"></v-text-field>
+
+                <v-text-field outlined dense v-model="phone" :error-messages="phoneErrors" label="Tlp/WhatsApp" required
+                    @input="$v.phone.$touch()" @blur="$v.phone.$touch()"></v-text-field>
+
+                <v-text-field outlined dense v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                    required @input="$v.password.$touch()" @blur="$v.password.$touch()"
+                    :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password"
+                    :error-messages="passwordErrors" counter @click:append="show1 = !show1"></v-text-field>
 
             </v-card-text>
 
@@ -46,7 +49,8 @@
                 </v-btn>
             </v-card-actions>
             <v-card-subtitle class="text-center">
-                <p>Sudah punya akun? <v-btn text @click="navigateTo('login')" class="ml-2">
+                <p>Sudah punya akun? <v-btn text @click="navigateTo('login')" class="mr-4 white--text"
+                        color="cyan darken-2">
                         Login di sini
                     </v-btn></p>
             </v-card-subtitle>
@@ -58,7 +62,6 @@
 import axios from 'axios';
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email as emailValidator, minLength } from 'vuelidate/lib/validators'
-import { mapGetters } from 'vuex';
 
 const maxlength = 18;
 const minlength = 3;
@@ -89,15 +92,16 @@ export default {
         async register() {
             this.isCompletedLoad = true;
             const param = { name: this.name, email: this.email, phone: this.phone, password: this.password }
-            await axios.post(process.env.VUE_APP_SERVICE_URL + "register", param).then(res => {
-                // Handle successful registration logic here
+            try {
+                const res = await axios.post(process.env.VUE_APP_SERVICE_URL + "register", param);
                 this.$router.push('/login').catch(() => { })
-            }).catch(error => {
+            } catch (error) {
                 this.alert = true;
                 console.log(error.response);
                 this.response.fail = error.response.data.message || 'An error occurred during registration.';
-            });
-            this.isCompletedLoad = false;
+            } finally {
+                this.isCompletedLoad = false;
+            }
         },
         clear() {
             this.$v.$reset();
@@ -112,37 +116,39 @@ export default {
     },
     computed: {
         nameErrors() {
-            const errors = []
-            if (!this.$v.name.$dirty) return errors
-            !this.$v.name.minLength && errors.push('Name must be at least ' + minlength + ' characters long')
-            !this.$v.name.required && errors.push('Name is required.')
-            return errors
+            const errors = [];
+            if (!this.$v.name.$dirty) return errors;
+            !this.$v.name.minLength && errors.push('Name must be at least ' + minlength + ' characters long');
+            !this.$v.name.required && errors.push('Name is required.');
+            return errors;
         },
         emailErrors() {
-            const errors = []
-            if (!this.$v.email.$dirty) return errors
-            !this.$v.email.email && errors.push('Email must be a valid email address.')
-            !this.$v.email.required && errors.push('Email is required.')
-            return errors
+            const errors = [];
+            if (!this.$v.email.$dirty) return errors;
+            !this.$v.email.email && errors.push('Email must be a valid email address.');
+            !this.$v.email.required && errors.push('Email is required.');
+            return errors;
         },
         phoneErrors() {
-            const errors = []
-            if (!this.$v.phone.$dirty) return errors
-            !this.$v.phone.minLength && errors.push('Phone must be at least ' + minlength + ' characters long')
-            !this.$v.phone.required && errors.push('Phone is required.')
-            return errors
+            const errors = [];
+            if (!this.$v.phone.$dirty) return errors;
+            !this.$v.phone.minLength && errors.push('Phone must be at least ' + minlength + ' characters long');
+            !this.$v.phone.required && errors.push('Phone is required.');
+            return errors;
         },
         passwordErrors() {
-            const errors = []
-            if (!this.$v.password.$dirty) return errors
-            !this.$v.password.maxLength && errors.push('Password must be at most ' + maxlength + ' characters long')
-            !this.$v.password.required && errors.push('Password is required.')
-            return errors
+            const errors = [];
+            if (!this.$v.password.$dirty) return errors;
+            !this.$v.password.maxLength && errors.push('Password must be at most ' + maxlength + ' characters long');
+            !this.$v.password.required && errors.push('Password is required.');
+            return errors;
         },
         isValid() {
-            return !this.$v.$pending && !this.$v.$error &&
+            // Ensure all fields have been touched and are valid
+            return this.$v.$dirty && !this.$v.$pending && !this.$v.$error &&
                 !this.nameErrors.length && !this.emailErrors.length &&
-                !this.phoneErrors.length && !this.passwordErrors.length;
+                !this.phoneErrors.length && !this.passwordErrors.length &&
+                this.name && this.email && this.phone && this.password;
         }
     },
 }

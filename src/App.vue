@@ -8,7 +8,6 @@
     <v-container>
       <C_Header v-if="isLoggedIn" />
       <router-view />
-      <Footers class="mt-15" />
     </v-container>
   </v-app>
 </template>

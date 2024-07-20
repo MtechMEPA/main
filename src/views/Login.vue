@@ -4,10 +4,9 @@
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
             <v-card-title class="justify-center">
                 <v-spacer></v-spacer>
-
                 <div class="col-12">
                     <center>
-                        <img src="../assets/logomepa.png" alt="" srcset="" width="60%">
+                        <img src="../assets/logomepa.png" alt="" srcset="" width="40%">
                         <h2>Login</h2>
                     </center>
                 </div>
@@ -23,12 +22,12 @@
                     </v-alert>
                 </div>
 
-                <v-text-field v-model="nomorAnggota" :error-messages="nomorAnggotaErrors" label="Nomor Anggota" required
-                    @input="$v.nomorAnggota.$touch()"></v-text-field>
-                <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" required
-                    @input="$v.password.$touch()" @blur="$v.password.$touch()" :type="show1 ? 'text' : 'password'"
-                    name="input-10-1" label="Password" :error-messages="passwordErrors" counter
-                    @click:append="show1 = !show1"></v-text-field>
+                <v-text-field outlined dense v-model="nomorAnggota" :error-messages="nomorAnggotaErrors"
+                    label="Nomor Anggota" required @input="$v.nomorAnggota.$touch()"></v-text-field>
+                <v-text-field outlined dense v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                    required @input="$v.password.$touch()" @blur="$v.password.$touch()"
+                    :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password"
+                    :error-messages="passwordErrors" counter @click:append="show1 = !show1"></v-text-field>
             </v-card-text>
 
             <v-card-actions>
@@ -47,9 +46,11 @@
                     <strong>PEMILIH</strong> jika anda pendukung Meki Nawipa - MEPA
                 </p>
                 <v-divider></v-divider>
-                <p> <v-btn text @click="navigateTo('registration/relawan')" class="ml-2">
+                <p> <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
+                        @click="navigateTo('registration/relawan')">
                         Relawan
-                    </v-btn> atau <v-btn text @click="navigateTo('registration/pemilih')" class="ml-2">
+                    </v-btn> atau <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
+                        @click="navigateTo('registration/pemilih')">
                         Pemilih
                     </v-btn></p>
             </v-card-subtitle>
@@ -94,9 +95,7 @@ export default {
 
                 this.alert = true;
                 this.response.message = "Berhasil login";
-
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
                 this.$router.push('/').catch(() => { });
 
             } catch (error) {
