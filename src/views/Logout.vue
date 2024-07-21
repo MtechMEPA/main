@@ -29,10 +29,7 @@ export default {
                 await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/logout");
 
                 // Clear localStorage
-                localStorage.removeItem('token');
-                localStorage.removeItem('isLogin');
-                localStorage.removeItem('alertSuccessLogin');
-                localStorage.removeItem('userData');
+                localStorage.clear();
 
                 // Set alert response
                 this.response.message = "Logout berhasil";
@@ -47,9 +44,15 @@ export default {
 
             } catch (error) {
                 // Handle error
+                localStorage.clear();
                 this.response.message = "Logout gagal";
                 this.alert = true;
                 console.log(error);
+                setTimeout(() => {
+                    this.$router.push("/login").catch(() => { })
+                        .then(() => { this.$router.go() });
+                    localStorage.clear();
+                }, 1000);
             } finally {
                 this.isCompletedLoad = false;
             }

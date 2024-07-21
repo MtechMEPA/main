@@ -11,6 +11,7 @@ import lookup from './modules/lookup'
 import unknown from './modules/unknown'
 import historys from './modules/history'
 import auth from './modules/auth'; // Import modul auth
+// import dialog from './modules/dialog'; // Import modul auth
 
 Vue.use(Vuex)
 export default new Vuex.Store({

@@ -55,11 +55,10 @@ class CommonValidation
                 ],
             ],
             'password' => [
-                'rules' => 'required|min_length[5]|regex_match[/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/]',
+                'rules' => 'required|min_length[5]',
                 'errors' => [
                     'required' => 'Password tidak boleh kosong',
                     'min_length' => 'Password minimal 5 karakter',
-                    'regex_match' => 'Password harus menggunakan huruf dan angka',
                 ],
             ],
         ];
