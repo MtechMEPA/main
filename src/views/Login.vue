@@ -68,8 +68,8 @@ var maxlength = 18;
 export default {
     mixins: [validationMixin],
     validations: {
-        nomorAnggota: { required, maxLength: maxLength(maxlength) },
-        password: { required, maxLength: maxLength(maxlength) },
+        nomorAnggota: { required },
+        password: { required },
     },
     data() {
         return {
@@ -86,21 +86,28 @@ export default {
     methods: {
         async login() {
             this.isCompletedLoad = true;
-            const param = { "username": this.nomorAnggota, "password": this.password };
+            const loginParam = { "username": this.nomorAnggota, "password": this.password };
             try {
-                const res = await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/login", param);
-                const token = res.data.data; // Token berada di dalam properti 'data'
-                console.log(res);
-                await this.$store.dispatch('login', { token, username: this.nomorAnggota });
+                // Panggil API login
+                const loginRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/login", loginParam);
+                const token = loginRes.data.data; // Token berada di dalam properti 'data'
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+                // Jika login berhasil, panggil API search/user
+                const userDetailsParam = { "volunteerID": this.nomorAnggota };
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
+                const userDetails = userDetailsRes.data.data[0];
+
+                // Simpan ke Vuex dan local storage
+                await this.$store.dispatch('login', { token, username: this.nomorAnggota, userDetails });
 
                 this.alert = true;
                 this.response.message = "Berhasil login";
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                this.$router.push('/').catch(() => { });
 
+                // Redirect ke halaman utama setelah semuanya berhasil
+                this.$router.push('/').catch(() => { });
             } catch (error) {
                 this.alert = true;
-                console.log(error.response);
                 this.response.message = error.response.data.message || 'Gagal login. Periksa username dan password Anda.';
             } finally {
                 this.isCompletedLoad = false;
@@ -120,14 +127,12 @@ export default {
         nomorAnggotaErrors() {
             const errors = [];
             if (!this.$v.nomorAnggota.$dirty) return errors;
-            !this.$v.nomorAnggota.maxLength && errors.push('Nomor Anggota must be at most ' + maxlength + ' characters long');
             !this.$v.nomorAnggota.required && errors.push('Nomor Anggota is required.');
             return errors;
         },
         passwordErrors() {
             const errors = [];
             if (!this.$v.password.$dirty) return errors;
-            !this.$v.password.maxLength && errors.push('Password must be at most ' + maxlength + ' characters long');
             !this.$v.password.required && errors.push('Password is required.');
             return errors;
         },

@@ -13,6 +13,10 @@
                 </div>
                 <v-spacer></v-spacer>
             </v-card-title>
+            <v-card-subtitle class="text-center">
+                <p>Registrasi sebagai pemilih loyal untuk memenangkan Meki Nawipa, mohon mengisi
+                    dengan data yang benar.</p>
+            </v-card-subtitle>
 
             <v-card-text class="text--primary">
                 <div>
@@ -61,18 +65,21 @@
 <script>
 import axios from 'axios';
 import { validationMixin } from 'vuelidate'
-import { required, maxLength, email as emailValidator, minLength } from 'vuelidate/lib/validators'
+import { required, maxLength, email as emailValidator, minLength, numeric } from 'vuelidate/lib/validators'
 
-const maxlength = 18;
-const minlength = 3;
+const maxlength15 = 15;
+const minlength10 = 10;
+
+const maxlength25 = 25;
+const minlength5 = 5;
 
 export default {
     mixins: [validationMixin],
     validations: {
-        name: { required, minLength: minLength(minlength) },
-        email: { required, email: emailValidator },
-        phone: { required, minLength: minLength(minlength) },
-        password: { required, maxLength: maxLength(maxlength) },
+        name: { required, minLength: minLength(minlength5), maxLength: maxLength(maxlength25) },
+        email: { required, email: emailValidator, minLength: minLength(minlength5) },
+        phone: { required, minLength: minLength(minlength10), maxLength: maxLength(maxlength15), numeric },
+        password: { required, maxLength: minLength(minlength5) },
     },
     data() {
         return {
@@ -118,29 +125,34 @@ export default {
         nameErrors() {
             const errors = [];
             if (!this.$v.name.$dirty) return errors;
-            !this.$v.name.minLength && errors.push('Name must be at least ' + minlength + ' characters long');
-            !this.$v.name.required && errors.push('Name is required.');
+            !this.$v.name.minLength && errors.push('Nama minimal ' + minlength5 + ' karakter');
+            !this.$v.name.maxLength && errors.push('Nama maksimal ' + maxlength25 + ' karakter');
+            !this.$v.name.required && errors.push('Nama tidak boleh kosong.');
             return errors;
         },
         emailErrors() {
             const errors = [];
             if (!this.$v.email.$dirty) return errors;
-            !this.$v.email.email && errors.push('Email must be a valid email address.');
-            !this.$v.email.required && errors.push('Email is required.');
+            !this.$v.email.email && errors.push('Email harus valid');
+            !this.$v.email.minLength && errors.push('Email minimal ' + minlength5 + ' karakter');
+            !this.$v.email.required && errors.push('Email tidak boleh kosong');
             return errors;
         },
         phoneErrors() {
             const errors = [];
             if (!this.$v.phone.$dirty) return errors;
-            !this.$v.phone.minLength && errors.push('Phone must be at least ' + minlength + ' characters long');
-            !this.$v.phone.required && errors.push('Phone is required.');
+            !this.$v.phone.minLength && errors.push('Tlp/WhatsApp minimal ' + minlength10 + ' karakter');
+            !this.$v.phone.maxLength && errors.push('Tlp/WhatsApp minimal ' + maxlength15 + ' karakter');
+            !this.$v.phone.required && errors.push('Tlp/WhatsApp tidak boleh kosong.');
+            !this.$v.phone.numeric && errors.push('Tlp/WhatsApp harus berupa angka.');
+
             return errors;
         },
         passwordErrors() {
             const errors = [];
             if (!this.$v.password.$dirty) return errors;
-            !this.$v.password.maxLength && errors.push('Password must be at most ' + maxlength + ' characters long');
-            !this.$v.password.required && errors.push('Password is required.');
+            !this.$v.password.maxLength && errors.push('Password minimal ' + minlength5 + ' karakter');
+            !this.$v.password.required && errors.push('Password todak boleh kosong.');
             return errors;
         },
         isValid() {
