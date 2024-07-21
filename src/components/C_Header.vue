@@ -35,7 +35,7 @@
                     <v-row>
                         <v-spacer></v-spacer>
                         <div class="text-center d-flex align-center justify-space-around pr-10">
-                            <span class="pr-15" v-text="users.name"></span>
+                            <span class="pr-15">Hi, {{ userDeta.name }}</span>
                             <!-- <v-chip class="ma-2" color="primary" dark @click="getHistoryRole(true)">
                                         Jabatan - {{ selectedRoleValue }}
                                     </v-chip> -->
@@ -85,7 +85,7 @@
                 <v-alert dense dark close-icon="mdi-close-circle-outline" color="cyan darken-1"
                     v-show="alertSuccessLogin" elevation="2" icon="mdi-information-outline" border="left" dismissible
                     transition="scale-transition">
-                    Hi <strong>{{ users.name }}</strong> Selamat datang di Meki Nawipa - MEPA
+                    Hi <strong>{{ userDeta.name }}</strong> Selamat datang di Meki Nawipa - MEPA
                 </v-alert>
             </div>
         </div>
@@ -151,13 +151,17 @@ export default {
             selectedItemRole: "",
             isOverlayLoading: true,
             selectedRole: [],
-            selectedRoleValue: ""
+            selectedRoleValue: "",
+            userDeta: {}
         }
     },
     mounted() {
         // this.getHistoryRole(false);
     },
     created() {
+        console.log(this.$store.state.auth['userDetails']);
+        this.userDeta = this.$store.state.auth['userDetails'];
+
         // this.renderImg();
         // this.isMobileData = this.$store.state.settings["settings"].isMobileData;
         // var listData = JSON.parse(localStorage.getItem('userData'));
@@ -240,8 +244,8 @@ export default {
         }
     },
     computed: {
+        ...mapState(['isLoggedIn', 'userDetails', 'settings']),
 
-        ...mapState(['isLoggedIn', 'username', 'settings']),
         switchLabel() {
             return this.darkMode == true ? 'light' : 'dark';
         },
