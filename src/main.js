@@ -6,7 +6,6 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 import httpClientAxios from './auth/http-common';
-import Modal from './components/C_GeneralDialog.vue';
 import VuePapaParse from 'vue-papa-parse';
 import mixins from 'vuetify-multiple-draggable-dialogs';
 import {
@@ -22,7 +21,6 @@ new Vue({
   store,
   vuetify,
   httpClientAxios,
-  Modal,
   AxiosPlugin,
   VuePapaParse,
   render: h => h(App)

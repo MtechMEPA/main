@@ -20,6 +20,10 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: "app",
+  components: {
+    C_Header,
+    Footers
+  },
   data() {
     return {
       alertVisible: false,
@@ -29,6 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn', 'username']),
+
     isLogin() {
       var status = false;
       if (localStorage.getItem('token') != null) {
@@ -98,10 +103,6 @@ export default {
     if (this.initDataAfterLogin) {
       // Optionally do something after login
     }
-  },
-  components: {
-    C_Header,
-    Footers
   }
 }
 </script>

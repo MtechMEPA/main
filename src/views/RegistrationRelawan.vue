@@ -7,7 +7,7 @@
 
                 <div class="col-12">
                     <center>
-                        <img src="../assets/logomepa.png" alt="" srcset="" width="40%">
+                        <img src="../assets/logomepa.png" alt="" width="40%">
                         <h2 color="blue-grey">Registrasi Relawan</h2>
                     </center>
                 </div>
@@ -15,17 +15,25 @@
             </v-card-title>
             <v-card-subtitle class="text-center">
                 <p>Registrasi sebagai relawan koordinator wilayah untuk memenangkan Meki Nawipa, mohon
-                    mengisi
-                    dengan data yang benar.</p>
+                    mengisi dengan data yang benar.</p>
             </v-card-subtitle>
 
             <v-card-text class="text--primary">
                 <div>
-                    <v-alert text dense close-icon="mdi-close-circle-outline" color="cyan darken-2" v-model="alert"
+                    <v-alert v-if="!this.response.error" text dense close-icon="mdi-close-circle-outline"
+                        color="cyan darken-2" v-model="alert" elevation="2" icon="mdi-information-outline" border="left"
+                        dismissible transition="scale-transition">
+                        {{ response.message }}
+                    </v-alert>
+
+                    <v-alert v-else text dense close-icon="mdi-close-circle-outline" color="red" v-model="alert"
                         elevation="2" icon="mdi-information-outline" border="left" dismissible
                         transition="scale-transition">
-                        {{ response.fail }}
+                        {{ response.message }} <br>
+                        {{ response.error.password }} <br>
+                        {{ response.error.username }}
                     </v-alert>
+
                 </div>
 
                 <v-text-field outlined dense v-model="name" :error-messages="nameErrors" label="Nama" required
@@ -60,6 +68,48 @@
                     </v-btn></p>
             </v-card-subtitle>
         </v-card>
+
+
+
+        <v-dialog v-model="showDialog" scrollable persistent width="600px">
+            <v-card>
+                <v-card-title>Registrasi Relawan Berhasil
+                    <v-spacer></v-spacer>
+                    <v-btn color="cyan darken-2" icon @click="closeDialog">
+                        <v-icon>
+                            mdi-close
+                        </v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <div class="mb-2">
+                        <v-alert text dense color="orange darken-2" elevation="2" icon="mdi-information-outline"
+                            border="left" transition="scale-transition">
+                            Perhatian! <br>
+                            Silahkan simpan Nomor Anggota <strong>{{ response.data.volunteerID }}</strong> anda untuk
+                            gunakan saat login
+                        </v-alert>
+                    </div>
+                    <div>
+                        <p><strong>Nomor Anggota:</strong> {{ response.data.volunteerID }}</p>
+                        <p><strong>Name:</strong> {{ response.data.name }}</p>
+                        <p><strong>Tlp/WhatsApp:</strong> {{ response.data.phone }}</p>
+                        <p><strong>Email:</strong> {{ response.data.email }}</p>
+                        <p class="text-uppercase"><strong>Tipe:</strong> {{ response.data.role }}</p>
+                    </div>
+
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn color="cyan darken-2" @click="closeDialog" text>
+                        OK
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+
     </form>
 </template>
 
@@ -70,9 +120,14 @@ import { required, maxLength, email as emailValidator, minLength, numeric } from
 
 const maxlength15 = 15;
 const minlength10 = 10;
-
 const maxlength25 = 25;
 const minlength5 = 5;
+
+const mustContainLetterAndNumber = value => {
+    const hasLetter = /[a-zA-Z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    return hasLetter && hasNumber || 'Password harus mengandung huruf dan angka.';
+};
 
 export default {
     mixins: [validationMixin],
@@ -80,7 +135,7 @@ export default {
         name: { required, minLength: minLength(minlength5), maxLength: maxLength(maxlength25) },
         email: { required, email: emailValidator, minLength: minLength(minlength5) },
         phone: { required, minLength: minLength(minlength10), maxLength: maxLength(maxlength15), numeric },
-        password: { required, maxLength: minLength(minlength5) },
+        password: { required, minLength: minLength(minlength5), mustContainLetterAndNumber },
     },
     data() {
         return {
@@ -91,22 +146,32 @@ export default {
             password: '',
             show1: false,
             alert: false,
+            showDialog: false,
             response: {
-                fail: ""
+                message: "",
+                data: {}
             }
         }
     },
     methods: {
         async register() {
             this.isCompletedLoad = true;
-            const param = { name: this.name, email: this.email, phone: this.phone, password: this.password }
+            const param = {
+                name: this.name,
+                email: this.email,
+                phone: this.phone,
+                password: this.password
+            };
             try {
-                const res = await axios.post(process.env.VUE_APP_SERVICE_URL + "register", param);
-                this.$router.push('/login').catch(() => { })
+                const res = await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/registration/relawan", param);
+                this.response = res.data;
+                this.showDialog = true;
             } catch (error) {
                 this.alert = true;
                 console.log(error.response);
-                this.response.fail = error.response.data.message || 'An error occurred during registration.';
+
+                this.response.message = error.response.data.message || 'An error occurred during registration.';
+                this.response.error = error.response.data.data;
             } finally {
                 this.isCompletedLoad = false;
             }
@@ -120,6 +185,10 @@ export default {
         },
         navigateTo(target) {
             this.$router.push('/' + target);
+        },
+        closeDialog() {
+            this.showDialog = false;
+            this.$router.push('/login').catch(() => { });
         }
     },
     computed: {
@@ -143,7 +212,7 @@ export default {
             const errors = [];
             if (!this.$v.phone.$dirty) return errors;
             !this.$v.phone.minLength && errors.push('Tlp/WhatsApp minimal ' + minlength10 + ' karakter');
-            !this.$v.phone.maxLength && errors.push('Tlp/WhatsApp minimal ' + maxlength15 + ' karakter');
+            !this.$v.phone.maxLength && errors.push('Tlp/WhatsApp maksimal ' + maxlength15 + ' karakter');
             !this.$v.phone.required && errors.push('Tlp/WhatsApp tidak boleh kosong.');
             !this.$v.phone.numeric && errors.push('Tlp/WhatsApp harus berupa angka.');
             return errors;
@@ -151,8 +220,9 @@ export default {
         passwordErrors() {
             const errors = [];
             if (!this.$v.password.$dirty) return errors;
-            !this.$v.password.maxLength && errors.push('Password minimal ' + minlength5 + ' karakter');
-            !this.$v.password.required && errors.push('Password todak boleh kosong.');
+            !this.$v.password.minLength && errors.push('Password minimal ' + minlength5 + ' karakter');
+            !this.$v.password.required && errors.push('Password tidak boleh kosong.');
+            !this.$v.password.mustContainLetterAndNumber && errors.push('Password harus mengandung huruf dan angka.');
             return errors;
         },
         isValid() {
@@ -165,6 +235,7 @@ export default {
     },
 }
 </script>
+
 <style scoped>
 .register-btn {
     background-color: #1E88E5;
