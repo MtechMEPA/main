@@ -30,8 +30,9 @@ export default {
 
                 // Clear localStorage
                 localStorage.removeItem('token');
-                localStorage.removeItem('successLogin');
-
+                localStorage.removeItem('isLogin');
+                localStorage.removeItem('alertSuccessLogin');
+                localStorage.removeItem('userData');
 
                 // Set alert response
                 this.response.message = "Logout berhasil";
