@@ -20,6 +20,8 @@ $routes->group('auth', function ($routes) {
     $routes->post('registration/pemilih', 'Auth::registrationPemilih');
     $routes->post('login', 'Auth::login');
     $routes->post('logout', 'Auth::logout');
+    $routes->post('validate', 'Auth::validateToken');
+
 });
 
 $routes->group('relawan', ['filter' => 'jwt:relawan'], function ($routes) {

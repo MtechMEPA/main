@@ -25,6 +25,12 @@ function validateJWT($encodedToken)
     try {
         $decodedToken = JWT::decode($encodedToken, new Key($key, 'HS256'));
 
+        // Cek apakah token sudah kedaluwarsa
+        $currentTime = time();
+        if ($decodedToken->exp < $currentTime) {
+            throw new Exception("Token sudah kedaluwarsa");
+        }
+
         // Cek apakah token ada di blacklist
         $blacklistModel = new BlacklistModel();
         $blacklisted = $blacklistModel->where('token', $encodedToken)->first();
@@ -44,7 +50,7 @@ function validateJWT($encodedToken)
 
         return $resultData;
     } catch (\Exception $e) {
-        throw new Exception("Validasi JWT Gagal: " . $e->getMessage());
+        throw new Exception("Validasi JWT Gagal : " . $e->getMessage());
     }
 }
 
@@ -93,7 +99,9 @@ function decodeJWT($token)
         $decoded = JWT::decode($token, new Key($key, 'HS256'));
         return (array) $decoded;
     } catch (\Exception $e) {
-        throw new Exception('Gagal logout, ' . $e->getMessage());
+        // throw new Exception('Gagal logout, ' . $e->getMessage());
+        return createResponse("Token tidak valid : " . $e->getMessage(), [], ResponseInterface::HTTP_UNAUTHORIZED);
+
     }
 }
 

@@ -65,15 +65,47 @@ class Auth extends BaseController
             if (empty($token)) {
                 $this->message = 'Token tidak boleh kosong';
             } else {
-                $decodedToken = decodeJWT($token);
-                blacklistToken($token, $decodedToken['exp']);
-                $this->message = 'Logout berhasil';
-                $this->statusCode = ResponseInterface::HTTP_OK;
+                $validateJWT = validateJWT($token);
+                if (!empty($validateJWT)) {
+                    $this->statusCode = ResponseInterface::HTTP_UNAUTHORIZED;
+                    $this->message = 'Token is invalid';
+                } else {
+                    $decodedToken = decodeJWT($token);
+                    blacklistToken($token, $decodedToken['exp']);
+                    $this->message = 'Logout berhasil';
+                    $this->statusCode = ResponseInterface::HTTP_OK;
+                }
             }
 
             return createResponse($this->message, $this->data, $this->statusCode);
         } catch (\Exception $e) {
-            return $this->fail($e->getMessage(), 400);
+            return createResponse($e->getMessage(), [], ResponseInterface::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    public function validateToken()
+    {
+        try {
+            $token = getJWT($this->request->getHeaderLine('Authorization'));
+            if (empty($token)) {
+                $this->statusCode = ResponseInterface::HTTP_UNAUTHORIZED;
+                $this->message = 'Token tidak boleh kosong';
+            } else {
+                $decodedToken = validateJWT($token);
+
+                if (!empty($decodedToken)) {
+                    $this->statusCode = ResponseInterface::HTTP_OK;
+                    $this->message = 'Token is valid';
+                    $this->data = $decodedToken;
+                } else {
+                    $this->statusCode = ResponseInterface::HTTP_UNAUTHORIZED;
+                    $this->message = 'Token is invalid';
+                }
+            }
+
+            return createResponse($this->message, $this->data, $this->statusCode);
+        } catch (\Exception $e) {
+            return createResponse($e->getMessage(), $this->data, ResponseInterface::HTTP_UNAUTHORIZED);
         }
     }
 
