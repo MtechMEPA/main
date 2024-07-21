@@ -39,8 +39,11 @@ export default {
                 this.alert = true;
 
                 // Redirect to login page
-                this.$router.push("/login").catch(() => { })
-                    .then(() => { this.$router.go() });
+                setTimeout(() => {
+                    this.$router.push("/login").catch(() => { })
+                        .then(() => { this.$router.go() });
+                }, 1000);
+
 
             } catch (error) {
                 // Handle error

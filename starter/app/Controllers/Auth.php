@@ -64,6 +64,7 @@ class Auth extends BaseController
             $token = getJWT($this->request->getHeaderLine('Authorization'));
             if (empty($token)) {
                 $this->message = 'Token tidak boleh kosong';
+                $this->statusCode = ResponseInterface::HTTP_UNAUTHORIZED;
             } else {
                 $validateJWT = validateJWT($token);
                 if (!empty($validateJWT)) {
@@ -79,7 +80,7 @@ class Auth extends BaseController
 
             return createResponse($this->message, $this->data, $this->statusCode);
         } catch (\Exception $e) {
-            return createResponse($e->getMessage(), [], ResponseInterface::HTTP_UNAUTHORIZED);
+            return createResponse($e->getMessage(), [], ResponseInterface::HTTP_BAD_REQUEST);
         }
     }
 

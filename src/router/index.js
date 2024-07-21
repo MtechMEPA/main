@@ -73,31 +73,17 @@ const routes = [
   {
     path: '/logout',
     name: 'Logout',
-    component: Logout,
-    beforeEnter: (to, from, next) => {
-      if (localStorage.getItem('token') == null) {
-        next({
-          path: '/login',
-          replace: true
-        });
-      } else {
-        next();
-      }
-    }
+    component: Logout 
   },
   {
     path: "/:catchAll(.*)",
     name: 'Notfound',
     component: Notfound,
     beforeEnter: (to, from, next) => {
-      if (localStorage.getItem('token') == null) {
-        next({
-          path: '/login',
-          replace: true
-        });
-      } else {
-        next();
-      }
+      next({
+        path: '/login',
+        replace: true
+      });
     }
   }
 ]
