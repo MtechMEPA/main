@@ -34,6 +34,12 @@
                 </div>
                 <v-row>
                     <v-col cols="12" sm="6">
+                        <v-select outlined dense v-model="parent" :items="listParentUsers" item-text="name"
+                            item-value="volunteerID" label="Koordinator Wilayah / Relawan" required
+                            :error-messages="parentErrors" @input="$v.parent.$touch()"
+                            @blur="$v.parent.$touch()"></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="name" :error-messages="nameErrors" label="Nama" required
                             @input="$v.name.$touch()" @blur="$v.name.$touch()"></v-text-field>
                     </v-col>
@@ -166,7 +172,8 @@ export default {
         gender: { required },
         birthDate: { required },
         regency: { required },
-        district: { required }
+        district: { required },
+        parent: { required }
     },
     data() {
         return {
@@ -184,6 +191,7 @@ export default {
             village: '',
             rt: '',
             rw: '',
+            parent: null,
 
             alert: false,
             showDialog: false,
@@ -234,7 +242,8 @@ export default {
                     ]
                 }
             ],
-            districts: []
+            districts: [],
+            listParentUsers: []
         };
     },
     computed: {
@@ -305,6 +314,13 @@ export default {
                 if (!this.$v.district.required) errors.push('Kecamatan wajib dipilih');
             }
             return errors;
+        },
+        parentErrors() {
+            const errors = [];
+            if (!this.$v.parent.$pending) {
+                if (!this.$v.parent.required) errors.push('Koordinator Wilayah/Relawan wajib dipilih');
+            }
+            return errors;
         }
 
     },
@@ -315,8 +331,8 @@ export default {
             if (this.isValid) {
                 this.isCompletedLoad = true;
                 const formData = new FormData();
-                formData.append('volunteerID', this.username);
 
+                formData.append('volunteerID', this.username);
                 formData.append('name', this.name);
                 formData.append('email', this.email);
                 formData.append('phone', this.phone);
@@ -329,10 +345,11 @@ export default {
                 formData.append('village', this.village);
                 formData.append('rt', this.rt);
                 formData.append('rw', this.rw);
-
                 formData.append('role', 'pemilih');
                 formData.append('status', 'inactive');
                 formData.append('personID', 'pemilihimage');
+                formData.append('parent', this.parent);
+
 
                 axios.post(`${process.env.VUE_APP_SERVICE_URL}pemilih/completion`, formData)
                     .then(async response => {
@@ -351,6 +368,12 @@ export default {
                         this.isCompletedLoad = false;
                     });
             }
+        },
+        async fetchParentUsers() {
+
+            const userDetailsParam = {};
+            const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
+            this.listParentUsers = userDetailsRes.data.data.filter(volunteer => volunteer.Role === "relawan");
         },
         async uploadFile(event) {
             const file = this.personID;
@@ -390,6 +413,14 @@ export default {
 
             this.$v.$reset();
         },
+        editForm(data) {
+            // Set the parent to the valunteerID of the data to be edited
+            this.parent = {
+                'name': data.name,
+                'valunteerID': data.valunteerID
+            };
+            console.log(parent);
+        },
         closeDialog() {
             this.showDialog = false;
             this.$router.push('/');
@@ -399,6 +430,7 @@ export default {
             const userDetailsParam = { "volunteerID": this.username };
             const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
             const userDetails = userDetailsRes.data.data[0];
+            this.editForm(userDetails);
             await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
             // }
         },
@@ -410,6 +442,7 @@ export default {
     },
     async created() {
         await this.fetchUserDetails();
+        await this.fetchParentUsers();
         if (this.userDetails) {
             this.name = this.userDetails.name;
             this.email = this.userDetails.email;
@@ -424,11 +457,10 @@ export default {
             this.village = this.userDetails.village;
             this.rt = this.userDetails.rt;
             this.rw = this.userDetails.rw;
+            this.parent = this.userDetails.valunteerID;
+
 
         }
-    },
-    async watch() {
-        await this.fetchUserDetails();
     }
 }
 </script>
