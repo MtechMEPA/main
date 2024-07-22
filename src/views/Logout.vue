@@ -46,7 +46,7 @@ export default {
                 // Handle error
                 localStorage.clear();
                 this.response.message = "Logout gagal";
-                this.alert = true;
+                this.alert = false;
                 console.log(error);
                 setTimeout(() => {
                     this.$router.push("/login").catch(() => { })
