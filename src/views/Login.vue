@@ -107,7 +107,12 @@ export default {
                 // Redirect ke halaman utama setelah semuanya berhasil
                 console.log(userDetails);
                 if (userDetails.status == "inactive") {
-                    this.$router.push('/completion-relawan').catch(() => { });
+                    if (userDetails.Role == "relawan") {
+                        this.$router.push('/completion-relawan').catch(() => { });
+                    } else if (userDetails.Role == "pemilih") {
+                        this.$router.push('/completion-pemilih').catch(() => { });
+
+                    }
                 } else {
                     this.$router.push('/').catch(() => { });
                 }
