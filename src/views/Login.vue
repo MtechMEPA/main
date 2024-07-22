@@ -105,7 +105,13 @@ export default {
                 this.response.message = "Berhasil login";
 
                 // Redirect ke halaman utama setelah semuanya berhasil
-                this.$router.push('/').catch(() => { });
+                console.log(userDetails);
+                if (userDetails.status == "inactive") {
+                    this.$router.push('/completion-relawan').catch(() => { });
+                } else {
+                    this.$router.push('/').catch(() => { });
+                }
+
             } catch (error) {
                 this.alert = true;
                 this.response.message = error.response.data.message || 'Gagal login. Periksa username dan password Anda.';

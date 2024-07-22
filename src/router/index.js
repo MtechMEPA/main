@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import RegistrationRelawan from '../views/RegistrationRelawan.vue'
 import RegistrationPemilih from '../views/RegistrationPemilih.vue'
+import CompletionRelawan from '../views/CompletionRelawan.vue'
+
 import Logout from '../views/Logout.vue'
 import Notfound from '../views/Notfound.vue'
 
@@ -74,6 +76,21 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     component: Logout 
+  },
+  {
+    path: '/completion-relawan',
+    name: 'Completion Relawan',
+    component: CompletionRelawan,
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('token') == null) {
+        next({
+          path: '/login',
+          replace: true
+        });
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/:catchAll(.*)",
