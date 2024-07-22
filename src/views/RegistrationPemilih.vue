@@ -14,7 +14,7 @@
                 <v-spacer></v-spacer>
             </v-card-title>
             <v-card-subtitle class="text-center">
-                <p>Registrasi sebagai relawan koordinator wilayah untuk memenangkan Meki Nawipa, mohon
+                <p>Registrasi sebagai pemilih untuk memenangkan Meki Nawipa, mohon
                     mengisi dengan data yang benar.</p>
             </v-card-subtitle>
 
