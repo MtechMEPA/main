@@ -7,7 +7,7 @@
                 <div class="col-12">
                     <center>
 
-                        <h2 color="blue-grey">Lengkapi Data Relawan</h2>
+                        <h2 color="blue-grey">Lengkapi Data Pemilih</h2>
                     </center>
                 </div>
                 <v-spacer></v-spacer>
@@ -93,22 +93,7 @@
                     <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="rw" label="RW" required></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="volunteerName" label="Nama Relawan"
-                            required></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="volunteersRegencyID" label="ID Kabupaten Relawan"
-                            required></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="volunteersDistrictID" label="ID Kecamatan Relawan"
-                            required></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                        <v-textarea outlined dense v-model="volunteersDescription" label="Deskripsi Relawan"
-                            required></v-textarea>
-                    </v-col>
+
                 </v-row>
             </v-card-text>
             <v-card-actions>
@@ -199,10 +184,7 @@ export default {
             village: '',
             rt: '',
             rw: '',
-            volunteerName: '',
-            volunteersRegencyID: '',
-            volunteersDistrictID: '',
-            volunteersDescription: '',
+
             alert: false,
             showDialog: false,
             imageLink: "",
@@ -347,15 +329,12 @@ export default {
                 formData.append('village', this.village);
                 formData.append('rt', this.rt);
                 formData.append('rw', this.rw);
-                formData.append('volunteerName', this.volunteerName);
-                formData.append('volunteersRegencyID', this.volunteersRegencyID);
-                formData.append('volunteersDistrictID', this.volunteersDistrictID);
-                formData.append('volunteersDescription', this.volunteersDescription);
-                formData.append('role', 'relawan');
-                formData.append('status', 'inactive');
-                formData.append('personID', 'relawanimage');
 
-                axios.post(`${process.env.VUE_APP_SERVICE_URL}relawan/completion`, formData)
+                formData.append('role', 'pemilih');
+                formData.append('status', 'inactive');
+                formData.append('personID', 'pemilihimage');
+
+                axios.post(`${process.env.VUE_APP_SERVICE_URL}pemilih/completion`, formData)
                     .then(async response => {
                         this.response = response.data;
                         if (!this.response.error) {
@@ -408,10 +387,7 @@ export default {
             this.village = '';
             this.rt = '';
             this.rw = '';
-            this.volunteerName = '';
-            this.volunteersRegencyID = '';
-            this.volunteersDistrictID = '';
-            this.volunteersDescription = '';
+
             this.$v.$reset();
         },
         closeDialog() {
@@ -448,10 +424,7 @@ export default {
             this.village = this.userDetails.village;
             this.rt = this.userDetails.rt;
             this.rw = this.userDetails.rw;
-            this.volunteerName = this.userDetails.volunteerName;
-            this.volunteersRegencyID = this.userDetails.volunteersRegencyID;
-            this.volunteersDistrictID = this.userDetails.volunteersDistrictID;
-            this.volunteersDescription = this.userDetails.volunteersDescription;
+
         }
     },
     async watch() {

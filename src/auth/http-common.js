@@ -2,13 +2,12 @@ import axios from 'axios';
 import router from '../router';
 
 // Mengatur header Authorization dengan token dari localStorage
-const setAuthHeader = () => {
+const setAuthHeader = (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-        delete axios.defaults.headers.common['Authorization'];
+        config.headers['Authorization'] = `Bearer ${token}`;
     }
+    return config;
 };
 
 // Fungsi untuk menangani respon yang tidak terotorisasi (401 Unauthorized)
@@ -16,20 +15,20 @@ const handleUnauthorized = async (error) => {
     if (error.response && error.response.status === 401) {
         // Hapus semua item dari localStorage
         localStorage.clear();
-    } else {
-        return Promise.reject(error);
+        // Redirect ke halaman login
+        router.push({ name: 'Login' });
     }
+    return Promise.reject(error);
 };
 
 // Interceptor untuk menangani permintaan API
-axios.interceptors.request.use(config => {
-    setAuthHeader();
-    return config;
+axios.interceptors.request.use((config) => {
+    return setAuthHeader(config);
 }, (error) => {
     return Promise.reject(error);
 });
 
 // Interceptor untuk menangani respon API
-axios.interceptors.response.use(resp => resp, handleUnauthorized);
+axios.interceptors.response.use(response => response, handleUnauthorized);
 
 export default axios;
