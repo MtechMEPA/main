@@ -21,7 +21,6 @@ class Relawan extends BaseController
     public function __construct()
     {
         parent::__construct();
-
         helper('jwt');
         $this->validation = \Config\Services::validation();
         $this->request = service('request');

@@ -76,12 +76,21 @@
                         <h3>3. Upload KTP</h3>
                     </v-col>
                     <v-col cols="12">
+                        <div>
+                            <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
+                                label="Upload KTP/SIM" accept="image/*" required :error-messages="personIDErrors"
+                                @input="$v.personID.$touch()" @blur="$v.personID.$touch()"></v-file-input>
 
-                        <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
-                            label="Upload KTP/SIM" accept="image/*" required></v-file-input>
-                        <span class="mb-2" color="text--green" v-if="imageLink != ''">Selamat KTP/SIM berhasil
-                            tersimpan</span>
-                        <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" width="40%">
+                            <div v-if="isUploadLoading">
+                                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                            </div>
+
+                            <div>
+                                <span class="mb-2" color="text--green" v-if="imageLink != ''">KTP/SIM berhasil
+                                    tersimpan</span>
+                            </div>
+                            <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" width="40%">
+                        </div>
                     </v-col>
                 </v-row>
 
@@ -101,16 +110,22 @@
                             @blur="$v.district.$touch()"></v-select>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="ward" label="Kelurahan" required></v-text-field>
+                        <v-text-field outlined dense v-model="ward" label="Kelurahan" required
+                            :error-messages="wardErrors" @input="$v.ward.$touch()"
+                            @blur="$v.ward.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="village" label="Desa" required></v-text-field>
+                        <v-text-field outlined dense v-model="village" label="Desa" required
+                            :error-messages="villageErrors" @input="$v.village.$touch()"
+                            @blur="$v.village.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="rt" label="RT" required></v-text-field>
+                        <v-text-field outlined dense v-model="rt" label="RT" required :error-messages="rtErrors"
+                            @input="$v.rt.$touch()" @blur="$v.rt.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="rw" label="RW" required></v-text-field>
+                        <v-text-field outlined dense v-model="rw" label="RW" required :error-messages="rwErrors"
+                            @input="$v.rw.$touch()" @blur="$v.rw.$touch()"></v-text-field>
                     </v-col>
                 </v-row>
 
@@ -125,6 +140,7 @@
                             <v-card-title>Summary</v-card-title>
                             <v-card-subtitle>Berikut adalah data yang telah Anda masukkan:</v-card-subtitle>
                             <v-card-text>
+                                <p><strong>Nomor Anggota:</strong> {{ username }}</p>
                                 <p><strong>Koordinator Wilayah:</strong> {{ parent }}</p>
                                 <p><strong>Nama:</strong> {{ name }}</p>
                                 <p><strong>Email:</strong> {{ email }}</p>
@@ -213,7 +229,12 @@ export default {
         birthDate: { required },
         regency: { required },
         district: { required },
-        parent: { required }
+        parent: { required },
+        ward: { required },
+        village: { required },
+        rt: { required },
+        rw: { required },
+        personID: { required }
     },
     data() {
         return {
@@ -244,7 +265,8 @@ export default {
             // regencies: [],
 
             districts: [],
-            listParentUsers: []
+            listParentUsers: [],
+            isUploadLoading: false
         };
     },
     computed: {
@@ -260,7 +282,13 @@ export default {
         birthDateErrors() { return this.getErrors('birthDate', 'Tanggal Lahir'); },
         regencyErrors() { return this.getErrors('regency', 'Kabupaten/Kota'); },
         districtErrors() { return this.getErrors('district', 'Kecamatan/Distrik'); },
-        parentErrors() { return this.getErrors('parent', 'Koordinator/Relawan'); }
+        parentErrors() { return this.getErrors('parent', 'Koordinator/Relawan'); },
+        wardErrors() { return this.getErrors('ward', 'Kelurahan'); },
+        rtErrors() { return this.getErrors('rt', 'RT'); },
+        rwErrors() { return this.getErrors('rw', 'RW'); },
+        villageErrors() { return this.getErrors('village', 'Desa/Kampung'); },
+        personIDErrors() { return this.getErrors('personID', 'KTP/SIM'); },
+
 
     },
     methods: {
@@ -325,7 +353,7 @@ export default {
         async uploadFile(event) {
             const file = this.personID;
             if (!file) return;
-
+            this.isUploadLoading = true;
             const formData = new FormData();
             formData.append('image', file);
             formData.append('volunteerID', this.username); // menambahkan data teks ke formData
@@ -340,6 +368,8 @@ export default {
                 }
             } catch (error) {
                 this.response.error = { ...this.response.error, fileUpload: 'File upload failed' };
+            } finally {
+                this.isUploadLoading = false; // Selesai loading
             }
         },
         clearForm() {
@@ -408,8 +438,7 @@ export default {
             this.showDialog = false;
             this.$router.go(0);
         },
-        async fetchUserDetails() {
-            // if (!this.userDetails) {
+        async fetchUserDetails() { 
             try {
                 const userDetailsParam = { "volunteerID": this.username };
                 const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);

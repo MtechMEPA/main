@@ -39,6 +39,7 @@ $routes->group('attachment', ['filter' => 'jwt:relawan,pemilih'], function ($rou
 
 $routes->group('search', ['filter' => 'jwt'], function ($routes) {
     $routes->post('user', 'Auth::getUsers');
+    $routes->post('userByID', 'Auth::getUserByID');
 });
 
 if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
