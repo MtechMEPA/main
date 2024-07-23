@@ -13,4 +13,6 @@ interface IUserService
     public function loginValidatePersonByID($id);
     public function getPersonByEmailPassword(PersonModel $payload);
     public function getUsers(PersonModel $payload);
+    public function getUserByID(PersonModel $payload);
+
 }

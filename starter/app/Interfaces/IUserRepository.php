@@ -12,4 +12,5 @@ interface IUserRepository
     public function getPersonByID($id);
     public function getPersonByEmailPassword(PersonModel $payload);
     public function getUsers(PersonModel $payload);
+    public function getUserByID(PersonModel $payload);
 }

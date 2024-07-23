@@ -92,7 +92,7 @@ class UserModel extends Model
         ];
         $jsonVolunteersData = json_encode($volunteersData);
 
-        $this->db->query("CALL updatePerson(?, @affectedRows)", [$jsonVolunteersData]);
+        $this->db->query("CALL updateUser(?, @affectedRows)", [$jsonVolunteersData]);
 
         // Ambil jumlah data yang terpengaruh dari variable session @affectedRows
         $queryAffectedRows = $this->db->query("SELECT @affectedRows as affectedRows");
@@ -121,6 +121,17 @@ class UserModel extends Model
         ];
 
         $query = $this->db->query("CALL GetUsers(?,?,?,?,?,?,?,?,?,?,?)", $payload);
+        $result = $query->getResult();
+        return $result;
+    }
+
+    public function getUserByID($payload)
+    {
+        $payload = [
+            empty($payload->getVolunteerID()) ? null : $payload->getVolunteerID(),
+        ];
+
+        $query = $this->db->query("CALL GetUserByID(?)", $payload);
         $result = $query->getResult();
         return $result;
     }

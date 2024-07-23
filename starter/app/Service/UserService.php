@@ -70,4 +70,9 @@ class UserService implements IUserService
     {
         return $this->userRepository->getUsers($payload);
     }
+
+    public function getUserByID(PersonModel $payload)
+    {
+        return $this->userRepository->getUserByID($payload);
+    }
 }

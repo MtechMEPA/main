@@ -62,13 +62,23 @@
                     <v-col cols="12">
                         <h3>2. Upload KTP</h3>
                     </v-col>
-                    <v-col cols="12">
 
-                        <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
-                            label="Upload KTP/SIM" accept="image/*" required></v-file-input>
-                        <span class="mb-2" color="text--green" v-if="imageLink != ''">Selamat KTP/SIM berhasil
-                            tersimpan</span>
-                        <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" width="40%">
+                    <v-col cols="12">
+                        <div>
+                            <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
+                                label="Upload KTP/SIM" accept="image/*" required :error-messages="personIDErrors"
+                                @input="$v.personID.$touch()" @blur="$v.personID.$touch()"></v-file-input>
+
+                            <div v-if="isUploadLoading">
+                                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                            </div>
+
+                            <div>
+                                <span class="mb-2" color="text--green" v-if="imageLink != ''">KTP/SIM berhasil
+                                    tersimpan</span>
+                            </div>
+                            <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" width="40%">
+                        </div>
                     </v-col>
                 </v-row>
 
@@ -88,16 +98,22 @@
                             @blur="$v.district.$touch()"></v-select>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="ward" label="Kelurahan" required></v-text-field>
+                        <v-text-field outlined dense v-model="ward" label="Kelurahan" required
+                            :error-messages="wardErrors" @input="$v.ward.$touch()"
+                            @blur="$v.ward.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="village" label="Desa" required></v-text-field>
+                        <v-text-field outlined dense v-model="village" label="Desa" required
+                            :error-messages="villageErrors" @input="$v.village.$touch()"
+                            @blur="$v.village.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="rt" label="RT" required></v-text-field>
+                        <v-text-field outlined dense v-model="rt" label="RT" required :error-messages="rtErrors"
+                            @input="$v.rt.$touch()" @blur="$v.rt.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="rw" label="RW" required></v-text-field>
+                        <v-text-field outlined dense v-model="rw" label="RW" required :error-messages="rwErrors"
+                            @input="$v.rw.$touch()" @blur="$v.rw.$touch()"></v-text-field>
                     </v-col>
                 </v-row>
 
@@ -141,7 +157,7 @@
                             <v-card-title>Summary</v-card-title>
                             <v-card-subtitle>Berikut adalah data yang telah Anda masukkan:</v-card-subtitle>
                             <v-card-text>
-                                <!-- <p><strong>Koordinator Wilayah:</strong> {{ parent }}</p> -->
+                                <p><strong>Nomor Anggota:</strong> {{ username }}</p>
                                 <p><strong>Nama:</strong> {{ name }}</p>
                                 <p><strong>Email:</strong> {{ email }}</p>
                                 <p><strong>Tlp/WhatsApp:</strong> {{ phone }}</p>
@@ -230,7 +246,12 @@ export default {
         volunteerName: { required },
         volunteersDescription: { required },
         volunteersRegencyID: { required },
-        volunteersDistrictID: { required }
+        volunteersDistrictID: { required },
+        ward: { required },
+        village: { required },
+        rt: { required },
+        rw: { required },
+        personID: { required }
     },
     data() {
         return {
@@ -261,7 +282,8 @@ export default {
                 error: {}
             },
             districts: [],
-            districtsVolunteer: []
+            districtsVolunteer: [],
+            isUploadLoading: false
         };
     },
     computed: {
@@ -281,7 +303,11 @@ export default {
         volunteersDistrictIDErrors() { return this.getErrors('volunteersDistrictID', 'Kecamatan/Distrik Pemenangan'); },
         volunteerNameErrors() { return this.getErrors('volunteerName', 'Nama Relawan'); },
         volunteersDescriptionErrors() { return this.getErrors('volunteersDescription', 'Deskripsi/Keterangan Relawan'); },
-
+        wardErrors() { return this.getErrors('ward', 'Kelurahan'); },
+        rtErrors() { return this.getErrors('rt', 'RT'); },
+        rwErrors() { return this.getErrors('rw', 'RW'); },
+        villageErrors() { return this.getErrors('village', 'Desa/Kampung'); },
+        personIDErrors() { return this.getErrors('personID', 'KTP/SIM'); },
 
     },
     methods: {
@@ -334,7 +360,7 @@ export default {
         async uploadFile(event) {
             const file = this.personID;
             if (!file) return;
-
+            this.isUploadLoading = true;
             const formData = new FormData();
             formData.append('image', file);
             formData.append('volunteerID', this.username); // menambahkan data teks ke formData
@@ -350,6 +376,8 @@ export default {
             } catch (error) {
                 console.error('File upload failed:', error);
                 this.response.error = { ...this.response.error, fileUpload: 'File upload failed' };
+            } finally {
+                this.isUploadLoading = false; // Selesai loading
             }
         },
         clearForm() {
@@ -377,17 +405,40 @@ export default {
             this.$router.go(0);
         },
         async fetchUserDetails() {
-            // if (!this.userDetails) {
-            const userDetailsParam = { "volunteerID": this.username };
-            const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
-            const userDetails = userDetailsRes.data.data[0];
-            await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
-            // }
+            try {
+                const userDetailsParam = { "volunteerID": this.username };
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
+                const userDetails = userDetailsRes.data.data[0];
+                this.editForm(userDetails);
+                await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
+            } catch (error) {
+                console.log(error);
+            }
+
         },
         onRegencyChange() {
             const regency = this.regencies.find(reg => reg.id === regencyId);
             this.districts = regency ? regency.districts : [];
             this.district = null; // Reset the selected district
+        },
+        editForm(userDetails) {
+            if (userDetails) {
+                this.parent = userDetails.parent;
+                this.name = userDetails.name;
+                this.email = userDetails.email;
+                this.phone = userDetails.phone;
+                this.address = userDetails.address;
+                this.gender = userDetails.gender;
+                this.personID = userDetails.personID;
+                this.birthDate = userDetails.birthDate;
+                this.regency = userDetails.regency;
+                this.district = userDetails.district;
+                this.ward = userDetails.ward;
+                this.village = userDetails.village;
+                this.rt = userDetails.rt;
+                this.rw = userDetails.rw;
+
+            }
         },
         getErrors(field, fieldMessage) {
             const errors = [];
@@ -428,28 +479,6 @@ export default {
         }
     },
     async created() {
-        await this.fetchUserDetails();
-        if (this.userDetails) {
-            this.name = this.userDetails.name;
-            this.email = this.userDetails.email;
-            this.phone = this.userDetails.phone;
-            this.address = this.userDetails.address;
-            this.gender = this.userDetails.gender;
-            this.personID = this.userDetails.personID;
-            this.birthDate = this.userDetails.birthDate;
-            this.regency = this.userDetails.regency;
-            this.district = this.userDetails.district;
-            this.ward = this.userDetails.ward;
-            this.village = this.userDetails.village;
-            this.rt = this.userDetails.rt;
-            this.rw = this.userDetails.rw;
-            this.volunteerName = this.userDetails.volunteerName;
-            this.volunteersRegencyID = this.userDetails.volunteersRegencyID;
-            this.volunteersDistrictID = this.userDetails.volunteersDistrictID;
-            this.volunteersDescription = this.userDetails.volunteersDescription;
-        }
-    },
-    async watch() {
         await this.fetchUserDetails();
     }
 }
