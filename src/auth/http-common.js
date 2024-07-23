@@ -16,7 +16,7 @@ const handleUnauthorized = async (error) => {
         // Hapus semua item dari localStorage
         localStorage.clear();
         // Redirect ke halaman login
-        router.push('/logout');
+        router.push({name : "logout"});
     }
     return Promise.reject(error);
 };

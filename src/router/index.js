@@ -18,10 +18,12 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    beforeEnter: (to, from, next) => {
-      if (localStorage.getItem('token') == null) {
+    beforeEnter: (to, from, next) => {  
+      const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+
+      if (localStorage.getItem('token') == null || userDetails.status == 'inactive') {
         next({
-          path: '/login',
+          path: '/logout',
           replace: true
         });
       } else {

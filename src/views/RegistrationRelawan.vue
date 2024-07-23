@@ -84,7 +84,7 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <div class="mb-2">
-                        <v-alert text dense color="orange darken-2" elevation="2" icon="mdi-information-outline"
+                        <v-alert text dense color="green darken-2" elevation="2" icon="mdi-information-outline"
                             border="left" transition="scale-transition">
                             Perhatian! <br>
                             Silahkan simpan Nomor Anggota <strong>{{ response.data.volunteerID }}</strong> anda untuk
