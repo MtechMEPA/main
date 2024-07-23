@@ -10,12 +10,15 @@ import unit from './modules/unit'
 import lookup from './modules/lookup'
 import unknown from './modules/unknown'
 import historys from './modules/history'
+import staticData from './modules/staticData'
 import auth from './modules/auth'; // Import modul auth
 // import dialog from './modules/dialog'; // Import modul auth
+
 
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
+    staticData,
     auth,
     employees,
     settings,
