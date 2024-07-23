@@ -7,7 +7,7 @@
 
                 <div class="col-12">
                     <center>
-                        <img src="../assets/logomepa.png" alt="" width="40%">
+                        <img src="../assets/logomepa.png" width="40%">
                         <h2 color="blue-grey">Registrasi Pemilih</h2>
                     </center>
                 </div>
@@ -82,9 +82,9 @@
                     </v-btn>
                 </v-card-title>
                 <v-divider></v-divider>
-                <v-card-text>
+                <v-card-text class="mt-2">
                     <div class="mb-2">
-                        <v-alert text dense color="orange darken-2" elevation="2" icon="mdi-information-outline"
+                        <v-alert text dense color="green darken-2" elevation="2" icon="mdi-information-outline"
                             border="left" transition="scale-transition">
                             Perhatian! <br>
                             Silahkan simpan Nomor Anggota <strong>{{ response.data.volunteerID }}</strong> anda untuk

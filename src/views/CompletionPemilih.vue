@@ -1,43 +1,42 @@
 <template>
-    <form>
+    <v-container>
         <v-card class="mx-auto my-15" max-width="800" outlined elevation="5">
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
+
             <v-card-title class="justify-center">
                 <v-spacer></v-spacer>
                 <div class="col-12">
                     <center>
-
-                        <h2 color="blue-grey">Lengkapi Data Pemilih</h2>
+                        <img src="../assets/logomepa.png" alt="" srcset="" width="40%">
+                        <h2>Lengkapi Data Pemilih</h2>
                     </center>
                 </div>
                 <v-spacer></v-spacer>
             </v-card-title>
+
             <v-card-subtitle class="text-center">
                 <p>Mohon lengkapi data berikut untuk menyelesaikan pendaftaran Anda.</p>
             </v-card-subtitle>
+
             <v-card-text class="text--primary">
-                <div>
-                    <v-alert v-if="!this.response.error" text dense close-icon="mdi-close-circle-outline"
-                        color="cyan darken-2" v-model="alert" elevation="2" icon="mdi-information-outline" border="left"
-                        dismissible transition="scale-transition">
-                        {{ response.message }}
-                    </v-alert>
-                    <v-alert v-else text dense close-icon="mdi-close-circle-outline" color="red" v-model="alert"
-                        elevation="2" icon="mdi-information-outline" border="left" dismissible
-                        transition="scale-transition">
-                        {{ response.message }} <br>
-                        {{ response.error.name }} <br>
-                        {{ response.error.email }} <br>
-                        {{ response.error.phone }} <br>
-                        {{ response.error.address }}
-                    </v-alert>
-                </div>
-                <v-row>
-                    <v-col cols="12" sm="6">
+                <!-- Bagian 1: Koordinator Wilayah -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>1. Koordinator Wilayah</h3>
+                    </v-col>
+                    <v-col cols="12">
+
                         <v-select outlined dense v-model="parent" :items="listParentUsers" item-text="name"
                             item-value="volunteerID" label="Koordinator Wilayah / Relawan" required
                             :error-messages="parentErrors" @input="$v.parent.$touch()"
                             @blur="$v.parent.$touch()"></v-select>
+                    </v-col>
+                </v-row>
+
+                <!-- Bagian 2: Data Diri -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>2. Data Diri</h3>
                     </v-col>
                     <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="name" :error-messages="nameErrors" label="Nama" required
@@ -61,26 +60,36 @@
                             @blur="$v.gender.$touch()"></v-select>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
-                            label="Upload KTP/SIM" accept="image/*" required
-                            @update:model-value="uploadFile"></v-file-input>
-                        <span class="mb-2" color="text--green" v-if="imageLink != ''">Selamat KTP/SIM berhasil
-                            tersimpan</span>
-                        <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" srcset="" width="40%">
-
-
-                    </v-col>
-                    <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="birthDate" label="Tanggal Lahir" type="date" required
                             :error-messages="birthDateErrors" @input="$v.birthDate.$touch()"
                             @blur="$v.birthDate.$touch()"></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6">
+                </v-row>
 
+                <!-- Bagian 3: Upload KTP -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>3. Upload KTP</h3>
+                    </v-col>
+                    <v-col cols="12">
+
+                        <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
+                            label="Upload KTP/SIM" accept="image/*" required></v-file-input>
+                        <span class="mb-2" color="text--green" v-if="imageLink != ''">Selamat KTP/SIM berhasil
+                            tersimpan</span>
+                        <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" width="40%">
+                    </v-col>
+                </v-row>
+
+                <!-- Bagian 4: Alamat Tinggal / Daerah Pemilihan -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>4. Alamat Tinggal / Daerah Pemilihan</h3>
+                    </v-col>
+                    <v-col cols="12" sm="6">
                         <v-select outlined dense v-model="regency" :error-messages="regencyErrors"
                             @input="$v.regency.$touch()" @blur="$v.regency.$touch()" :items="regencies" item-text="name"
                             item-value="id" label="Kabupaten/Kota" @change="onRegencyChange" required></v-select>
-
                     </v-col>
                     <v-col cols="12" sm="6">
                         <v-select outlined dense v-model="district" :items="districts" item-text="name" item-value="id"
@@ -99,9 +108,40 @@
                     <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="rw" label="RW" required></v-text-field>
                     </v-col>
+                </v-row>
 
+                <!-- Bagian 5: Review/Summary -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>5. Review/Summary</h3>
+                    </v-col>
+                    <v-col cols="12">
+
+                        <v-card>
+                            <v-card-title>Summary</v-card-title>
+                            <v-card-subtitle>Berikut adalah data yang telah Anda masukkan:</v-card-subtitle>
+                            <v-card-text>
+                                <p><strong>Koordinator Wilayah:</strong> {{ parent }}</p>
+                                <p><strong>Nama:</strong> {{ name }}</p>
+                                <p><strong>Email:</strong> {{ email }}</p>
+                                <p><strong>Tlp/WhatsApp:</strong> {{ phone }}</p>
+                                <p><strong>Alamat:</strong> {{ address }}</p>
+                                <p><strong>Jenis Kelamin:</strong> {{ gender }}</p>
+                                <p><strong>Tanggal Lahir:</strong> {{ birthDate }}</p>
+                                <p><strong>Kabupaten/Kota:</strong> {{ regency }}</p>
+                                <p><strong>Kecamatan:</strong> {{ district }}</p>
+                                <p><strong>Kelurahan:</strong> {{ ward }}</p>
+                                <p><strong>Desa:</strong> {{ village }}</p>
+                                <p><strong>RT:</strong> {{ rt }}</p>
+                                <p><strong>RW:</strong> {{ rw }}</p>
+                                <p v-if="imageLink != ''"><strong>Gambar KTP/SIM:</strong> <img :src="imageLink"
+                                        width="200"></p>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
                 </v-row>
             </v-card-text>
+
             <v-card-actions>
                 <v-btn :disabled="!isValid || isCompletedLoad" class="mr-4 white--text" color="cyan darken-2"
                     @click="submitForm">
@@ -112,44 +152,9 @@
                 </v-btn>
             </v-card-actions>
         </v-card>
-        <v-dialog v-model="showDialog" scrollable persistent width="600px">
-            <v-card>
-                <v-card-title>Data Relawan Berhasil Dikirim
-                    <v-spacer></v-spacer>
-                    <v-btn color="cyan darken-2" icon @click="closeDialog">
-                        <v-icon>
-                            mdi-close
-                        </v-icon>
-                    </v-btn>
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                    <div class="mb-2">
-                        <v-alert text dense color="orange darken-2" elevation="2" icon="mdi-information-outline"
-                            border="left" transition="scale-transition">
-                            Perhatian! <br>
-                            Silahkan simpan Nomor Anggota <strong>{{ response.data.volunteerID }}</strong> anda untuk
-                            gunakan saat login
-                        </v-alert>
-                    </div>
-                    <div>
-                        <p><strong>Nomor Anggota:</strong> {{ response.data.volunteerID }}</p>
-                        <p><strong>Name:</strong> {{ response.data.name }}</p>
-                        <p><strong>Tlp/WhatsApp:</strong> {{ response.data.phone }}</p>
-                        <p><strong>Email:</strong> {{ response.data.email }}</p>
-                        <p class="text-uppercase"><strong>Tipe:</strong> {{ response.data.role }}</p>
-                    </div>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                    <v-btn color="cyan darken-2" @click="closeDialog" text>
-                        OK
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </form>
+    </v-container>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -201,127 +206,26 @@ export default {
                 data: [],
                 error: {}
             },
-            regencies: [
-                {
-                    id: 1, name: 'Kabupaten Puncak Jaya', districts: [
-                        { id: 1, name: 'Kecamatan Jaya' },
-                        { id: 2, name: 'Kecamatan Ilaga' },
-                        { id: 3, name: 'Kecamatan Mugi' },
-                        { id: 4, name: 'Kecamatan Napua' },
-                        { id: 5, name: 'Kecamatan Tiom' },
-                        { id: 6, name: 'Kecamatan Uwei' }
-                    ]
-                },
-                {
-                    id: 2, name: 'Kabupaten Lanny Jaya', districts: [
-                        { id: 7, name: 'Kecamatan Alesipo' },
-                        { id: 8, name: 'Kecamatan Banggai' },
-                        { id: 9, name: 'Kecamatan Dekai' },
-                        { id: 10, name: 'Kecamatan Gika' },
-                        { id: 11, name: 'Kecamatan Jila' },
-                        { id: 12, name: 'Kecamatan Kembu' }
-                    ]
-                },
-                {
-                    id: 3, name: 'Kabupaten Nduga', districts: [
-                        { id: 13, name: 'Kecamatan Kenyam' },
-                        { id: 14, name: 'Kecamatan Mapenduma' },
-                        { id: 15, name: 'Kecamatan Mugi' },
-                        { id: 16, name: 'Kecamatan Nduga' },
-                        { id: 17, name: 'Kecamatan Yigi' }
-                    ]
-                },
-                {
-                    id: 4, name: 'Kabupaten Yalimo', districts: [
-                        { id: 18, name: 'Kecamatan Apalapsili' },
-                        { id: 19, name: 'Kecamatan Elelim' },
-                        { id: 20, name: 'Kecamatan Hong' },
-                        { id: 21, name: 'Kecamatan Kemtuk' },
-                        { id: 22, name: 'Kecamatan Kurulu' },
-                        { id: 23, name: 'Kecamatan Yalimo' }
-                    ]
-                }
-            ],
+            // regencies: [],
+
             districts: [],
             listParentUsers: []
         };
     },
     computed: {
-        ...mapGetters(['isLoggedIn', 'username', 'userDetails', 'token']),
+        ...mapGetters(['isLoggedIn', 'username', 'userDetails', 'token', 'regencies']),
         isValid() {
             return !this.$v.$invalid;
         },
-        nameErrors() {
-            const errors = [];
-            if (!this.$v.name.$pending) {
-                if (!this.$v.name.required) errors.push('Nama wajib diisi');
-                if (!this.$v.name.minLength) errors.push(`Nama minimal ${minlength5} karakter`);
-                if (!this.$v.name.maxLength) errors.push(`Nama maksimal ${maxlength25} karakter`);
-            }
-            return errors;
-        },
-        emailErrors() {
-            const errors = [];
-            if (!this.$v.email.$pending) {
-                if (!this.$v.email.required) errors.push('Email wajib diisi');
-                if (!this.$v.email.email) errors.push('Format email tidak valid');
-                if (!this.$v.email.minLength) errors.push(`Email minimal ${minlength5} karakter`);
-            }
-            return errors;
-        },
-        phoneErrors() {
-            const errors = [];
-            if (!this.$v.phone.$pending) {
-                if (!this.$v.phone.required) errors.push('Tlp/WhatsApp wajib diisi');
-                if (!this.$v.phone.minLength) errors.push(`Tlp/WhatsApp minimal ${minlength10} karakter`);
-                if (!this.$v.phone.maxLength) errors.push(`Tlp/WhatsApp maksimal ${maxlength15} karakter`);
-                if (!this.$v.phone.numeric) errors.push('Tlp/WhatsApp harus berupa angka');
-            }
-            return errors;
-        },
-        addressErrors() {
-            const errors = [];
-            if (!this.$v.address.$pending) {
-                if (!this.$v.address.required) errors.push('Alamat wajib diisi');
-                if (!this.$v.address.minLength) errors.push(`Alamat minimal ${minlength5} karakter`);
-            }
-            return errors;
-        },
-        genderErrors() {
-            const errors = [];
-            if (!this.$v.gender.$pending) {
-                if (!this.$v.gender.required) errors.push('Jenis Kelamin wajib dipilih');
-            }
-            return errors;
-        },
-        birthDateErrors() {
-            const errors = [];
-            if (!this.$v.birthDate.$pending) {
-                if (!this.$v.birthDate.required) errors.push('Tanggal Lahir wajib dipilih');
-            }
-            return errors;
-        },
-        regencyErrors() {
-            const errors = [];
-            if (!this.$v.regency.$pending) {
-                if (!this.$v.regency.required) errors.push('Kabupaten/Kota wajib dipilih');
-            }
-            return errors;
-        },
-        districtErrors() {
-            const errors = [];
-            if (!this.$v.district.$pending) {
-                if (!this.$v.district.required) errors.push('Kecamatan wajib dipilih');
-            }
-            return errors;
-        },
-        parentErrors() {
-            const errors = [];
-            if (!this.$v.parent.$pending) {
-                if (!this.$v.parent.required) errors.push('Koordinator Wilayah/Relawan wajib dipilih');
-            }
-            return errors;
-        }
+        nameErrors() { return this.getErrors('name', 'Nama'); },
+        emailErrors() { return this.getErrors('email', 'Email'); },
+        phoneErrors() { return this.getErrors('phone', 'Tlp/WhatsApp'); },
+        addressErrors() { return this.getErrors('address', 'Alamat'); },
+        genderErrors() { return this.getErrors('gender', 'Jenis Kelamin'); },
+        birthDateErrors() { return this.getErrors('birthDate', 'Tanggal Lahir'); },
+        regencyErrors() { return this.getErrors('regency', 'Kabupaten/Kota'); },
+        districtErrors() { return this.getErrors('district', 'Kecamatan/Distrik'); },
+        parentErrors() { return this.getErrors('parent', 'Koordinator/Relawan'); }
 
     },
     methods: {
@@ -372,8 +276,16 @@ export default {
         async fetchParentUsers() {
 
             const userDetailsParam = {};
-            const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
-            this.listParentUsers = userDetailsRes.data.data.filter(volunteer => volunteer.Role === "relawan");
+            axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam).then((value) => {
+                if (value.data) {
+                    var tempData = value.data.data.filter(volunteer => volunteer.Role === "relawan");
+                    if (tempData != []) {
+                        this.listParentUsers = tempData;
+                    }
+                }
+            });
+
+
         },
         async uploadFile(event) {
             const file = this.personID;
@@ -392,7 +304,6 @@ export default {
                     this.imageLink = process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + response.data.data.name;
                 }
             } catch (error) {
-                console.error('File upload failed:', error);
                 this.response.error = { ...this.response.error, fileUpload: 'File upload failed' };
             }
         },
@@ -413,13 +324,35 @@ export default {
 
             this.$v.$reset();
         },
-        editForm(data) {
-            // Set the parent to the valunteerID of the data to be edited
-            this.parent = {
-                'name': data.name,
-                'valunteerID': data.valunteerID
-            };
-            console.log(parent);
+        editForm(userDetails) {
+            if (userDetails) {
+                this.parent = userDetails.parent;
+                this.name = userDetails.name;
+                this.email = userDetails.email;
+                this.phone = userDetails.phone;
+                this.address = userDetails.address;
+                this.gender = userDetails.gender;
+                this.personID = userDetails.personID;
+                this.birthDate = userDetails.birthDate;
+                this.regency = userDetails.regency;
+                this.district = userDetails.district;
+                this.ward = userDetails.ward;
+                this.village = userDetails.village;
+                this.rt = userDetails.rt;
+                this.rw = userDetails.rw;
+
+            }
+        },
+        getErrors(field, fieldMessage) {
+            const errors = [];
+            if (!this.$v[field].$pending) {
+                if (!this.$v[field].required) errors.push(`${fieldMessage} wajib diisi`);
+                if (this.$v[field].$params.minLength && !this.$v[field].minLength) errors.push(`${fieldMessage} minimal ${this.$v[fieldMessage].$params.minLength.min} karakter`);
+                if (this.$v[field].$params.maxLength && !this.$v[field].maxLength) errors.push(`${fieldMessage} maksimal ${this.$v[fieldMessage].$params.maxLength.max} karakter`);
+                if (this.$v[field].$params.numeric && !this.$v[field].numeric) errors.push(`${fieldMessage} harus berupa angka`);
+                if (this.$v[field].$params.email && !this.$v[field].email) errors.push(`Format email tidak valid`);
+            }
+            return errors;
         },
         closeDialog() {
             this.showDialog = false;
@@ -427,12 +360,16 @@ export default {
         },
         async fetchUserDetails() {
             // if (!this.userDetails) {
-            const userDetailsParam = { "volunteerID": this.username };
-            const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
-            const userDetails = userDetailsRes.data.data[0];
-            this.editForm(userDetails);
-            await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
-            // }
+            try {
+                const userDetailsParam = { "volunteerID": this.username };
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
+                const userDetails = userDetailsRes.data.data[0];
+                this.editForm(userDetails);
+                await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
+            } catch (error) {
+                console.log(error);
+            }
+
         },
         onRegencyChange(regencyId) {
             const regency = this.regencies.find(reg => reg.id === regencyId);
@@ -441,26 +378,8 @@ export default {
         }
     },
     async created() {
-        await this.fetchUserDetails();
         await this.fetchParentUsers();
-        if (this.userDetails) {
-            this.name = this.userDetails.name;
-            this.email = this.userDetails.email;
-            this.phone = this.userDetails.phone;
-            this.address = this.userDetails.address;
-            this.gender = this.userDetails.gender;
-            this.personID = this.userDetails.personID;
-            this.birthDate = this.userDetails.birthDate;
-            this.regency = this.userDetails.regency;
-            this.district = this.userDetails.district;
-            this.ward = this.userDetails.ward;
-            this.village = this.userDetails.village;
-            this.rt = this.userDetails.rt;
-            this.rw = this.userDetails.rw;
-            this.parent = this.userDetails.valunteerID;
-
-
-        }
+        await this.fetchUserDetails();
     }
 }
 </script>
