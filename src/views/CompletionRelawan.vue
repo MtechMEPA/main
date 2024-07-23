@@ -4,8 +4,10 @@
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
             <v-card-title class="justify-center">
                 <v-spacer></v-spacer>
+
                 <div class="col-12">
                     <center>
+                        <img src="../assets/logomepa.png" alt="" srcset="" width="40%">
 
                         <h2 color="blue-grey">Lengkapi Data Relawan</h2>
                     </center>
@@ -16,23 +18,17 @@
                 <p>Mohon lengkapi data berikut untuk menyelesaikan pendaftaran Anda.</p>
             </v-card-subtitle>
             <v-card-text class="text--primary">
-                <div>
-                    <v-alert v-if="!this.response.error" text dense close-icon="mdi-close-circle-outline"
-                        color="cyan darken-2" v-model="alert" elevation="2" icon="mdi-information-outline" border="left"
-                        dismissible transition="scale-transition">
-                        {{ response.message }}
-                    </v-alert>
-                    <v-alert v-else text dense close-icon="mdi-close-circle-outline" color="red" v-model="alert"
-                        elevation="2" icon="mdi-information-outline" border="left" dismissible
-                        transition="scale-transition">
-                        {{ response.message }} <br>
-                        {{ response.error.name }} <br>
-                        {{ response.error.email }} <br>
-                        {{ response.error.phone }} <br>
-                        {{ response.error.address }}
-                    </v-alert>
-                </div>
-                <v-row>
+                <v-alert v-if="!this.response.error" text dense close-icon="mdi-close-circle-outline"
+                    color="cyan darken-2" v-model="alert" elevation="2" icon="mdi-information-outline" border="left"
+                    dismissible transition="scale-transition">
+                    {{ response.message }}
+                </v-alert>
+
+                <!-- Bagian 1: Data Diri -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>1. Data Diri</h3>
+                    </v-col>
                     <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="name" :error-messages="nameErrors" label="Nama" required
                             @input="$v.name.$touch()" @blur="$v.name.$touch()"></v-text-field>
@@ -55,26 +51,36 @@
                             @blur="$v.gender.$touch()"></v-select>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
-                            label="Upload KTP/SIM" accept="image/*" required
-                            @update:model-value="uploadFile"></v-file-input>
-                        <span class="mb-2" color="text--green" v-if="imageLink != ''">Selamat KTP/SIM berhasil
-                            tersimpan</span>
-                        <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" srcset="" width="40%">
-
-
-                    </v-col>
-                    <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="birthDate" label="Tanggal Lahir" type="date" required
                             :error-messages="birthDateErrors" @input="$v.birthDate.$touch()"
                             @blur="$v.birthDate.$touch()"></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6">
+                </v-row>
 
+                <!-- Bagian 2: Upload KTP -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>2. Upload KTP</h3>
+                    </v-col>
+                    <v-col cols="12">
+
+                        <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
+                            label="Upload KTP/SIM" accept="image/*" required></v-file-input>
+                        <span class="mb-2" color="text--green" v-if="imageLink != ''">Selamat KTP/SIM berhasil
+                            tersimpan</span>
+                        <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" width="40%">
+                    </v-col>
+                </v-row>
+
+                <!-- Bagian 3: Alamat Tinggal / Daerah Pemilihan -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>3. Alamat Tinggal / Daerah Pemilihan</h3>
+                    </v-col>
+                    <v-col cols="12" sm="6">
                         <v-select outlined dense v-model="regency" :error-messages="regencyErrors"
                             @input="$v.regency.$touch()" @blur="$v.regency.$touch()" :items="regencies" item-text="name"
                             item-value="id" label="Kabupaten/Kota" @change="onRegencyChange" required></v-select>
-
                     </v-col>
                     <v-col cols="12" sm="6">
                         <v-select outlined dense v-model="district" :items="districts" item-text="name" item-value="id"
@@ -93,24 +99,69 @@
                     <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="rw" label="RW" required></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="volunteerName" label="Nama Relawan"
-                            required></v-text-field>
+                </v-row>
+
+                <!-- Bagian 4: Data Daerah pemenangan Relawan -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>4. Data Daerah Pemenangan Relawan</h3>
+                    </v-col>
+                    <v-col cols="12" sm="12">
+                        <v-text-field outlined dense v-model="volunteerName" label="Nama Relawan" required
+                            :error-messages="volunteerNameErrors" @input="$v.volunteerName.$touch()"
+                            @blur="$v.volunteerName.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="volunteersRegencyID" label="ID Kabupaten Relawan"
-                            required></v-text-field>
+                        <v-select outlined dense v-model="volunteersRegencyID"
+                            :error-messages="volunteersRegencyIDErrors" @input="$v.volunteersRegencyID.$touch()"
+                            @blur="$v.volunteersRegencyID.$touch()" :items="regencies" item-text="name" item-value="id"
+                            label="Kabupaten/Kota" @change="onRegencyRelawanChange" required></v-select>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="volunteersDistrictID" label="ID Kecamatan Relawan"
-                            required></v-text-field>
+                        <v-select outlined dense v-model="volunteersDistrictID" :items="districtsVolunteer"
+                            item-text="name" item-value="id" label="Kecamatan" required
+                            :error-messages="volunteersDistrictIDErrors" @input="$v.volunteersDistrictID.$touch()"
+                            @blur="$v.volunteersDistrictID.$touch()"></v-select>
                     </v-col>
                     <v-col cols="12">
-                        <v-textarea outlined dense v-model="volunteersDescription" label="Deskripsi Relawan"
-                            required></v-textarea>
+                        <v-textarea outlined dense v-model="volunteersDescription" label="Deskripsi Relawan" required
+                            :error-messages="volunteersDescriptionErrors" @input="$v.volunteersDescription.$touch()"
+                            @blur="$v.volunteersDescription.$touch()"></v-textarea>
+                    </v-col>
+                </v-row>
+
+                <!-- Bagian 5: Review/Summary -->
+                <v-row class="mb-4">
+                    <v-col cols="12">
+                        <h3>5. Review/Summary</h3>
+                    </v-col>
+                    <v-col cols="12">
+
+                        <v-card>
+                            <v-card-title>Summary</v-card-title>
+                            <v-card-subtitle>Berikut adalah data yang telah Anda masukkan:</v-card-subtitle>
+                            <v-card-text>
+                                <!-- <p><strong>Koordinator Wilayah:</strong> {{ parent }}</p> -->
+                                <p><strong>Nama:</strong> {{ name }}</p>
+                                <p><strong>Email:</strong> {{ email }}</p>
+                                <p><strong>Tlp/WhatsApp:</strong> {{ phone }}</p>
+                                <p><strong>Alamat:</strong> {{ address }}</p>
+                                <p><strong>Jenis Kelamin:</strong> {{ gender }}</p>
+                                <p><strong>Tanggal Lahir:</strong> {{ birthDate }}</p>
+                                <p><strong>Kabupaten/Kota:</strong> {{ regency }}</p>
+                                <p><strong>Kecamatan:</strong> {{ district }}</p>
+                                <p><strong>Kelurahan:</strong> {{ ward }}</p>
+                                <p><strong>Desa:</strong> {{ village }}</p>
+                                <p><strong>RT:</strong> {{ rt }}</p>
+                                <p><strong>RW:</strong> {{ rw }}</p>
+                                <p v-if="imageLink != ''"><strong>Gambar KTP/SIM:</strong> <img :src="imageLink"
+                                        width="200"></p>
+                            </v-card-text>
+                        </v-card>
                     </v-col>
                 </v-row>
             </v-card-text>
+
             <v-card-actions>
                 <v-btn :disabled="!isValid || isCompletedLoad" class="mr-4 white--text" color="cyan darken-2"
                     @click="submitForm">
@@ -120,43 +171,37 @@
                     <v-icon>mdi-cached</v-icon> Clear
                 </v-btn>
             </v-card-actions>
+
+            <v-dialog v-model="showDialog" scrollable persistent width="600px">
+                <v-card>
+                    <v-card-title>Data Relawan Berhasil Tersimpan
+                        <v-spacer></v-spacer>
+                        <v-btn color="cyan darken-2" icon @click="closeDialog">
+                            <v-icon>
+                                mdi-close
+                            </v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <v-card-text>
+                        <div class="mb-2">
+                            <v-alert text dense color="green darken-2" elevation="2" icon="mdi-information-outline"
+                                border="left" transition="scale-transition">
+                                Data anda sudah tersimpan! <br>
+                                Pengurus pusat akan melakukan review terhadap data anda.
+                            </v-alert>
+                        </div>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-btn color="cyan darken-2" @click="closeDialog" text>
+                            OK
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
         </v-card>
-        <v-dialog v-model="showDialog" scrollable persistent width="600px">
-            <v-card>
-                <v-card-title>Data Relawan Berhasil Dikirim
-                    <v-spacer></v-spacer>
-                    <v-btn color="cyan darken-2" icon @click="closeDialog">
-                        <v-icon>
-                            mdi-close
-                        </v-icon>
-                    </v-btn>
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                    <div class="mb-2">
-                        <v-alert text dense color="orange darken-2" elevation="2" icon="mdi-information-outline"
-                            border="left" transition="scale-transition">
-                            Perhatian! <br>
-                            Silahkan simpan Nomor Anggota <strong>{{ response.data.volunteerID }}</strong> anda untuk
-                            gunakan saat login
-                        </v-alert>
-                    </div>
-                    <div>
-                        <p><strong>Nomor Anggota:</strong> {{ response.data.volunteerID }}</p>
-                        <p><strong>Name:</strong> {{ response.data.name }}</p>
-                        <p><strong>Tlp/WhatsApp:</strong> {{ response.data.phone }}</p>
-                        <p><strong>Email:</strong> {{ response.data.email }}</p>
-                        <p class="text-uppercase"><strong>Tipe:</strong> {{ response.data.role }}</p>
-                    </div>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                    <v-btn color="cyan darken-2" @click="closeDialog" text>
-                        OK
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </form>
 </template>
 
@@ -181,7 +226,11 @@ export default {
         gender: { required },
         birthDate: { required },
         regency: { required },
-        district: { required }
+        district: { required },
+        volunteerName: { required },
+        volunteersDescription: { required },
+        volunteersRegencyID: { required },
+        volunteersDistrictID: { required }
     },
     data() {
         return {
@@ -200,8 +249,8 @@ export default {
             rt: '',
             rw: '',
             volunteerName: '',
-            volunteersRegencyID: '',
-            volunteersDistrictID: '',
+            volunteersRegencyID: null,
+            volunteersDistrictID: null,
             volunteersDescription: '',
             alert: false,
             showDialog: false,
@@ -211,119 +260,28 @@ export default {
                 data: [],
                 error: {}
             },
-            regencies: [
-                {
-                    id: 1, name: 'Kabupaten Puncak Jaya', districts: [
-                        { id: 1, name: 'Kecamatan Jaya' },
-                        { id: 2, name: 'Kecamatan Ilaga' },
-                        { id: 3, name: 'Kecamatan Mugi' },
-                        { id: 4, name: 'Kecamatan Napua' },
-                        { id: 5, name: 'Kecamatan Tiom' },
-                        { id: 6, name: 'Kecamatan Uwei' }
-                    ]
-                },
-                {
-                    id: 2, name: 'Kabupaten Lanny Jaya', districts: [
-                        { id: 7, name: 'Kecamatan Alesipo' },
-                        { id: 8, name: 'Kecamatan Banggai' },
-                        { id: 9, name: 'Kecamatan Dekai' },
-                        { id: 10, name: 'Kecamatan Gika' },
-                        { id: 11, name: 'Kecamatan Jila' },
-                        { id: 12, name: 'Kecamatan Kembu' }
-                    ]
-                },
-                {
-                    id: 3, name: 'Kabupaten Nduga', districts: [
-                        { id: 13, name: 'Kecamatan Kenyam' },
-                        { id: 14, name: 'Kecamatan Mapenduma' },
-                        { id: 15, name: 'Kecamatan Mugi' },
-                        { id: 16, name: 'Kecamatan Nduga' },
-                        { id: 17, name: 'Kecamatan Yigi' }
-                    ]
-                },
-                {
-                    id: 4, name: 'Kabupaten Yalimo', districts: [
-                        { id: 18, name: 'Kecamatan Apalapsili' },
-                        { id: 19, name: 'Kecamatan Elelim' },
-                        { id: 20, name: 'Kecamatan Hong' },
-                        { id: 21, name: 'Kecamatan Kemtuk' },
-                        { id: 22, name: 'Kecamatan Kurulu' },
-                        { id: 23, name: 'Kecamatan Yalimo' }
-                    ]
-                }
-            ],
-            districts: []
+            districts: [],
+            districtsVolunteer: []
         };
     },
     computed: {
-        ...mapGetters(['isLoggedIn', 'username', 'userDetails', 'token']),
+        ...mapGetters(['isLoggedIn', 'username', 'userDetails', 'token', 'regencies']),
         isValid() {
             return !this.$v.$invalid;
         },
-        nameErrors() {
-            const errors = [];
-            if (!this.$v.name.$pending) {
-                if (!this.$v.name.required) errors.push('Nama wajib diisi');
-                if (!this.$v.name.minLength) errors.push(`Nama minimal ${minlength5} karakter`);
-                if (!this.$v.name.maxLength) errors.push(`Nama maksimal ${maxlength25} karakter`);
-            }
-            return errors;
-        },
-        emailErrors() {
-            const errors = [];
-            if (!this.$v.email.$pending) {
-                if (!this.$v.email.required) errors.push('Email wajib diisi');
-                if (!this.$v.email.email) errors.push('Format email tidak valid');
-                if (!this.$v.email.minLength) errors.push(`Email minimal ${minlength5} karakter`);
-            }
-            return errors;
-        },
-        phoneErrors() {
-            const errors = [];
-            if (!this.$v.phone.$pending) {
-                if (!this.$v.phone.required) errors.push('Tlp/WhatsApp wajib diisi');
-                if (!this.$v.phone.minLength) errors.push(`Tlp/WhatsApp minimal ${minlength10} karakter`);
-                if (!this.$v.phone.maxLength) errors.push(`Tlp/WhatsApp maksimal ${maxlength15} karakter`);
-                if (!this.$v.phone.numeric) errors.push('Tlp/WhatsApp harus berupa angka');
-            }
-            return errors;
-        },
-        addressErrors() {
-            const errors = [];
-            if (!this.$v.address.$pending) {
-                if (!this.$v.address.required) errors.push('Alamat wajib diisi');
-                if (!this.$v.address.minLength) errors.push(`Alamat minimal ${minlength5} karakter`);
-            }
-            return errors;
-        },
-        genderErrors() {
-            const errors = [];
-            if (!this.$v.gender.$pending) {
-                if (!this.$v.gender.required) errors.push('Jenis Kelamin wajib dipilih');
-            }
-            return errors;
-        },
-        birthDateErrors() {
-            const errors = [];
-            if (!this.$v.birthDate.$pending) {
-                if (!this.$v.birthDate.required) errors.push('Tanggal Lahir wajib dipilih');
-            }
-            return errors;
-        },
-        regencyErrors() {
-            const errors = [];
-            if (!this.$v.regency.$pending) {
-                if (!this.$v.regency.required) errors.push('Kabupaten/Kota wajib dipilih');
-            }
-            return errors;
-        },
-        districtErrors() {
-            const errors = [];
-            if (!this.$v.district.$pending) {
-                if (!this.$v.district.required) errors.push('Kecamatan wajib dipilih');
-            }
-            return errors;
-        }
+        nameErrors() { return this.getErrors('name', 'Nama'); },
+        emailErrors() { return this.getErrors('email', 'Email'); },
+        phoneErrors() { return this.getErrors('phone', 'Tlp/WhatsApp'); },
+        addressErrors() { return this.getErrors('address', 'Alamat'); },
+        genderErrors() { return this.getErrors('gender', 'Jenis Kelamin'); },
+        birthDateErrors() { return this.getErrors('birthDate', 'Tanggal Lahir'); },
+        regencyErrors() { return this.getErrors('regency', 'Kabupaten/Kota'); },
+        districtErrors() { return this.getErrors('district', 'Kecamatan/Distrik'); },
+        volunteersRegencyIDErrors() { return this.getErrors('volunteersRegencyID', 'Kabupaten/Kota Pemenangan'); },
+        volunteersDistrictIDErrors() { return this.getErrors('volunteersDistrictID', 'Kecamatan/Distrik Pemenangan'); },
+        volunteerNameErrors() { return this.getErrors('volunteerName', 'Nama Relawan'); },
+        volunteersDescriptionErrors() { return this.getErrors('volunteersDescription', 'Deskripsi/Keterangan Relawan'); },
+
 
     },
     methods: {
@@ -360,7 +318,7 @@ export default {
                         this.response = response.data;
                         if (!this.response.error) {
                             this.alert = true;
-                            this.showDialog = false;
+                            this.showDialog = true;
                             await this.fetchUserDetails();
                         }
                     })
@@ -416,7 +374,7 @@ export default {
         },
         closeDialog() {
             this.showDialog = false;
-            this.$router.push('/');
+            this.$router.go(0);
         },
         async fetchUserDetails() {
             // if (!this.userDetails) {
@@ -426,10 +384,47 @@ export default {
             await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
             // }
         },
+        onRegencyChange() {
+            const regency = this.regencies.find(reg => reg.id === regencyId);
+            this.districts = regency ? regency.districts : [];
+            this.district = null; // Reset the selected district
+        },
+        getErrors(field, fieldMessage) {
+            const errors = [];
+            const validation = this.$v[field];
+
+            if (!validation.$pending) {
+                if (!validation.required) errors.push(`${fieldMessage} wajib diisi`);
+
+                if (validation.$params.minLength && !validation.minLength) {
+                    errors.push(`${fieldMessage} minimal ${validation.$params.minLength.min} karakter`);
+                }
+
+                if (validation.$params.maxLength && !validation.maxLength) {
+                    errors.push(`${fieldMessage} maksimal ${validation.$params.maxLength.max} karakter`);
+                }
+
+                if (validation.$params.numeric && !validation.numeric) {
+                    errors.push(`${fieldMessage} harus berupa angka`);
+                }
+
+                if (validation.$params.email && !validation.email) {
+                    errors.push(`Format email tidak valid`);
+                }
+            }
+
+            return errors;
+        },
+
         onRegencyChange(regencyId) {
             const regency = this.regencies.find(reg => reg.id === regencyId);
             this.districts = regency ? regency.districts : [];
             this.district = null; // Reset the selected district
+        },
+        onRegencyRelawanChange(volunteersRegencyID) {
+            const regency = this.regencies.find(reg => reg.id === volunteersRegencyID);
+            this.districtsVolunteer = regency ? regency.districts : [];
+            this.volunteersDistrictID = null; // Reset the selected district
         }
     },
     async created() {

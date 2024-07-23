@@ -17,7 +17,11 @@
             <v-card-subtitle class="text-center">
                 <p>Mohon lengkapi data berikut untuk menyelesaikan pendaftaran Anda.</p>
             </v-card-subtitle>
-
+            <v-alert v-if="!this.response.error" text dense close-icon="mdi-close-circle-outline" color="cyan darken-2"
+                v-model="alert" elevation="2" icon="mdi-information-outline" border="left" dismissible
+                transition="scale-transition">
+                {{ response.message }}
+            </v-alert>
             <v-card-text class="text--primary">
                 <!-- Bagian 1: Koordinator Wilayah -->
                 <v-row class="mb-4">
@@ -151,6 +155,37 @@
                     <v-icon>mdi-cached</v-icon> Clear
                 </v-btn>
             </v-card-actions>
+
+            <v-dialog v-model="showDialog" scrollable persistent width="600px">
+                <v-card>
+                    <v-card-title>Data Relawan Berhasil Tersimpan
+                        <v-spacer></v-spacer>
+                        <v-btn color="cyan darken-2" icon @click="closeDialog">
+                            <v-icon>
+                                mdi-close
+                            </v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <v-card-text>
+                        <div class="mb-2">
+                            <v-alert text dense color="green darken-2" elevation="2" icon="mdi-information-outline"
+                                border="left" transition="scale-transition">
+                                Data anda sudah tersimpan! <br>
+                                Pengurus pusat akan melakukan review terhadap data anda.
+                            </v-alert>
+                        </div>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-btn color="cyan darken-2" @click="closeDialog" text>
+                            OK
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+
         </v-card>
     </v-container>
 </template>
@@ -260,7 +295,7 @@ export default {
                         this.response = response.data;
                         if (!this.response.error) {
                             this.alert = true;
-                            this.showDialog = false;
+                            this.showDialog = true;
                             await this.fetchUserDetails();
                         }
                     })
@@ -345,18 +380,33 @@ export default {
         },
         getErrors(field, fieldMessage) {
             const errors = [];
-            if (!this.$v[field].$pending) {
-                if (!this.$v[field].required) errors.push(`${fieldMessage} wajib diisi`);
-                if (this.$v[field].$params.minLength && !this.$v[field].minLength) errors.push(`${fieldMessage} minimal ${this.$v[fieldMessage].$params.minLength.min} karakter`);
-                if (this.$v[field].$params.maxLength && !this.$v[field].maxLength) errors.push(`${fieldMessage} maksimal ${this.$v[fieldMessage].$params.maxLength.max} karakter`);
-                if (this.$v[field].$params.numeric && !this.$v[field].numeric) errors.push(`${fieldMessage} harus berupa angka`);
-                if (this.$v[field].$params.email && !this.$v[field].email) errors.push(`Format email tidak valid`);
+            const validation = this.$v[field];
+
+            if (!validation.$pending) {
+                if (!validation.required) errors.push(`${fieldMessage} wajib diisi`);
+
+                if (validation.$params.minLength && !validation.minLength) {
+                    errors.push(`${fieldMessage} minimal ${validation.$params.minLength.min} karakter`);
+                }
+
+                if (validation.$params.maxLength && !validation.maxLength) {
+                    errors.push(`${fieldMessage} maksimal ${validation.$params.maxLength.max} karakter`);
+                }
+
+                if (validation.$params.numeric && !validation.numeric) {
+                    errors.push(`${fieldMessage} harus berupa angka`);
+                }
+
+                if (validation.$params.email && !validation.email) {
+                    errors.push(`Format email tidak valid`);
+                }
             }
+
             return errors;
         },
         closeDialog() {
             this.showDialog = false;
-            this.$router.push('/');
+            this.$router.go(0);
         },
         async fetchUserDetails() {
             // if (!this.userDetails) {
