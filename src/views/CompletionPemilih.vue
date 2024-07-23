@@ -313,7 +313,7 @@ export default {
             const userDetailsParam = {};
             axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam).then((value) => {
                 if (value.data) {
-                    var tempData = value.data.data.filter(volunteer => volunteer.Role === "relawan");
+                    var tempData = value.data.data.filter(volunteer => volunteer.Role === "relawan" && volunteer.status === "active");
                     if (tempData != []) {
                         this.listParentUsers = tempData;
                     }
