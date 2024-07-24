@@ -432,12 +432,17 @@ export default {
                 this.personID = userDetails.personID;
                 this.birthDate = userDetails.birthDate;
                 this.regency = userDetails.regency;
-                this.district = userDetails.district;
                 this.ward = userDetails.ward;
                 this.village = userDetails.village;
                 this.rt = userDetails.rt;
                 this.rw = userDetails.rw;
-
+                this.volunteerName = userDetails.volunteerName;
+                this.volunteersDescription = userDetails.volunteersDescription;
+                this.volunteersRegencyID = userDetails.volunteersRegencyID;
+                this.volunteersDistrictID = userDetails.volunteersDistrictID;
+                this.volunteersDistrictID = userDetails.volunteersDistrictID;
+                this.onRegencyChange();
+                this.district = userDetails.district;
             }
         },
         getErrors(field, fieldMessage) {
