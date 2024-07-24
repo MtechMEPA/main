@@ -407,7 +407,7 @@ export default {
         async fetchUserDetails() {
             try {
                 const userDetailsParam = { "volunteerID": this.username };
-                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
                 const userDetails = userDetailsRes.data.data[0];
                 this.editForm(userDetails);
                 await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
