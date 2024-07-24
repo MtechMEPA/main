@@ -118,7 +118,9 @@ const state = () => ({
                 { id: 'MimikaB12', name: 'Hoya' },
                 { id: 'MimikaB13', name: 'Iwaka' },
                 { id: 'MimikaB14', name: 'Amar' },
-                { id: 'MimikaB15', name: 'Alama' }
+                { id: 'MimikaB15', name: 'Alama' },
+                { id: 'MimikaB16', name: 'Mimika Baru' },
+                { id: 'MimikaB17', name: 'Wania' }
             ]
         },
         {
