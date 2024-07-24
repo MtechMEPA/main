@@ -442,7 +442,7 @@ export default {
                 this.volunteersDistrictID = userDetails.volunteersDistrictID;
                 this.volunteersDistrictID = userDetails.volunteersDistrictID;
                 this.imageLink = process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + userDetails.attachmentName;
-                this.onRegencyChange();
+                this.onRegencyChange(this.regency);
                 this.district = userDetails.district;
             }
         },

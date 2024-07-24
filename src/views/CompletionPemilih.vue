@@ -400,14 +400,13 @@ export default {
                 this.personID = userDetails.personID;
                 this.birthDate = userDetails.birthDate;
                 this.regency = userDetails.regency;
-                this.district = userDetails.district;
                 this.ward = userDetails.ward;
                 this.village = userDetails.village;
                 this.rt = userDetails.rt;
                 this.rw = userDetails.rw;
                 this.imageLink = process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + userDetails.attachmentName;
-
-
+                this.onRegencyChange(this.regency);
+                this.district = userDetails.district;
             }
         },
         getErrors(field, fieldMessage) {

@@ -95,7 +95,7 @@ export default {
 
                 // Jika login berhasil, panggil API search/user
                 const userDetailsParam = { "volunteerID": this.nomorAnggota };
-                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
                 const userDetails = userDetailsRes.data.data[0];
 
                 // Simpan ke Vuex dan local storage
@@ -107,9 +107,9 @@ export default {
                 // Redirect ke halaman utama setelah semuanya berhasil
                 console.log(userDetails);
                 if (userDetails.status == "inactive") {
-                    if (userDetails.Role == "relawan") {
+                    if (userDetails.role == "relawan") {
                         this.$router.push('/completion-relawan').catch(() => { });
-                    } else if (userDetails.Role == "pemilih") {
+                    } else if (userDetails.role == "pemilih") {
                         this.$router.push('/completion-pemilih').catch(() => { });
 
                     }
