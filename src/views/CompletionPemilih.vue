@@ -405,6 +405,8 @@ export default {
                 this.village = userDetails.village;
                 this.rt = userDetails.rt;
                 this.rw = userDetails.rw;
+                this.imageLink = process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + userDetails.attachmentName;
+
 
             }
         },
