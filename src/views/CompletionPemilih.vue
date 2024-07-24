@@ -339,7 +339,7 @@ export default {
         async fetchParentUsers() {
 
             const userDetailsParam = {};
-            axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam).then((value) => {
+            axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam).then((value) => {
                 if (value.data) {
                     var tempData = value.data.data.filter(volunteer => volunteer.Role === "relawan" && volunteer.status === "active");
                     if (tempData != []) {
@@ -438,10 +438,10 @@ export default {
             this.showDialog = false;
             this.$router.go(0);
         },
-        async fetchUserDetails() { 
+        async fetchUserDetails() {
             try {
                 const userDetailsParam = { "volunteerID": this.username };
-                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/user", userDetailsParam);
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
                 const userDetails = userDetailsRes.data.data[0];
                 this.editForm(userDetails);
                 await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
