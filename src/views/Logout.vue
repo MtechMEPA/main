@@ -24,11 +24,10 @@ export default {
     },
     methods: {
         ...mapActions(['showOverlayLoading', 'hideOverlayLoading']),
-
         async logout() {
-
+            this.showOverlayLoading();
             try {
-
+                await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/logout");
                 await this.$store.dispatch('setDialog', {
                     isShowDialog: true,
                     title: 'Berhasil Logout',
@@ -43,15 +42,8 @@ export default {
                 localStorage.clear();
                 this.response.message = "Logout gagal";
                 this.alert = false;
-                setTimeout(() => {
-                    this.$router.push("/login").catch(() => { })
-                        .then(() => { this.$router.go() });
-                    localStorage.clear();
-                }, 1000);
             } finally {
-
-                this.$store.dispatch('logout');
-
+                this.hideOverlayLoading();
             }
         }
     },

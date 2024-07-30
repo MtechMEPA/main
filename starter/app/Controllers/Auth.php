@@ -62,22 +62,10 @@ class Auth extends BaseController
     {
         try {
             $token = getJWT($this->request->getHeaderLine('Authorization'));
-            if (empty($token)) {
-                $this->message = 'Token tidak boleh kosong';
-                $this->statusCode = ResponseInterface::HTTP_UNAUTHORIZED;
-            } else {
-                $validateJWT = validateJWT($token);
-                if (!empty($validateJWT)) {
-                    $this->statusCode = ResponseInterface::HTTP_UNAUTHORIZED;
-                    $this->message = 'Token is invalid';
-                } else {
-                    $decodedToken = decodeJWT($token);
-                    blacklistToken($token, $decodedToken['exp']);
-                    $this->message = 'Logout berhasil';
-                    $this->statusCode = ResponseInterface::HTTP_OK;
-                }
-            }
-
+            $decodedToken = decodeJWT($token);
+            blacklistToken($token, $decodedToken['exp']);
+            $this->message = 'Logout berhasil';
+            $this->statusCode = ResponseInterface::HTTP_OK;
             return createResponse($this->message, $this->data, $this->statusCode);
         } catch (\Exception $e) {
             return createResponse($e->getMessage(), [], ResponseInterface::HTTP_BAD_REQUEST);
@@ -181,7 +169,8 @@ class Auth extends BaseController
         return createResponse($this->message, $this->data, $this->statusCode);
     }
 
-    public function getUserByID(){
+    public function getUserByID()
+    {
         $registerModel = new PersonModel($this->request);
         $users = $this->userService->getUserByID($registerModel);
         if (empty($users)) {
