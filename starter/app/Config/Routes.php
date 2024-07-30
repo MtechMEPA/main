@@ -24,16 +24,16 @@ $routes->group('auth', function ($routes) {
 
 });
 
-$routes->group('relawan', ['filter' => 'jwt:relawan'], function ($routes) {
+$routes->group('relawan', ['filter' => 'jwt:relawan,admin'], function ($routes) {
     $routes->post('completion', 'Relawan::completionRegistration');
     $routes->post('completion', 'Relawan::completionRegistration');
 });
 
-$routes->group('pemilih', ['filter' => 'jwt:pemilih'], function ($routes) {
+$routes->group('pemilih', ['filter' => 'jwt:pemilih,admin'], function ($routes) {
     $routes->post('completion', 'Pemilih::completionRegistration');
 });
 
-$routes->group('attachment', ['filter' => 'jwt:relawan,pemilih'], function ($routes) {
+$routes->group('attachment', ['filter' => 'jwt:relawan,pemilih,admin'], function ($routes) {
     $routes->post('upload', 'Attachment::uploadAttachment');
 });
 

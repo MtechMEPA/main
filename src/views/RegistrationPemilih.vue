@@ -168,8 +168,6 @@ export default {
                 this.showDialog = true;
             } catch (error) {
                 this.alert = true;
-                console.log(error.response);
-
                 this.response.message = error.response.data.message || 'An error occurred during registration.';
                 this.response.error = error.response.data.data;
             } finally {

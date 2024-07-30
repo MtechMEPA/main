@@ -1,7 +1,9 @@
 <template>
     <form>
         <v-card class="mx-auto my-15" max-width="500" outlined elevation="5">
-            <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
+            <v-overlay v-show="isCompletedLoad" :value="true" z-index="2000">
+                <v-progress-circular indeterminate color="white" size="70"></v-progress-circular>
+            </v-overlay>
             <v-card-title class="justify-center">
                 <v-spacer></v-spacer>
                 <div class="col-12">
@@ -62,7 +64,8 @@
 import axios from 'axios';
 import { validationMixin } from 'vuelidate'
 import { required, maxLength } from 'vuelidate/lib/validators'
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+
 var maxlength = 18;
 
 export default {
@@ -84,44 +87,73 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['showOverlayLoading', 'hideOverlayLoading']),
+
         async login() {
-            this.isCompletedLoad = true;
+            this.showOverlayLoading();
             const loginParam = { "username": this.nomorAnggota, "password": this.password };
             try {
                 // Panggil API login
                 const loginRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/login", loginParam);
                 const token = loginRes.data.data; // Token berada di dalam properti 'data'
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-                // Jika login berhasil, panggil API search/user
-                const userDetailsParam = { "volunteerID": this.nomorAnggota };
-                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
-                const userDetails = userDetailsRes.data.data[0];
-
-                // Simpan ke Vuex dan local storage
-                await this.$store.dispatch('login', { token, username: this.nomorAnggota, userDetails });
-
-                this.alert = true;
-                this.response.message = "Berhasil login";
-
-                // Redirect ke halaman utama setelah semuanya berhasil
-                console.log(userDetails);
-                if (userDetails.status == "inactive") {
-                    if (userDetails.role == "relawan") {
-                        this.$router.push('/completion-relawan').catch(() => { });
-                    } else if (userDetails.role == "pemilih") {
-                        this.$router.push('/completion-pemilih').catch(() => { });
-
-                    }
-                } else {
-                    this.$router.push('/').catch(() => { });
-                }
+                await this.$store.dispatch('login', { token, username: this.nomorAnggota });
+                await this.initUserData();
 
             } catch (error) {
                 this.alert = true;
                 this.response.message = error.response.data.message || 'Gagal login. Periksa username dan password Anda.';
             } finally {
-                this.isCompletedLoad = false;
+                this.hideOverlayLoading();
+            }
+        },
+        async initUserData() {
+
+            // load all data for first time and save into localstorage
+            this.showOverlayLoading();
+            try {
+
+                // Jika login berhasil, panggil API search/user
+                const userDetailsParam = {};
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
+                const users = userDetailsRes.data.data;
+                var userDetails = users.filter(volunteer => volunteer.volunteerID === this.nomorAnggota);
+
+                await this.$store.dispatch('setUserData', { users });
+                await this.$store.dispatch('setUserLogin', { userLogin: userDetails[0] });
+
+
+
+                var message = '';
+                var color = "";
+                if (userDetails[0].status == "inactive" && userDetails[0].role == "relawan") {
+                    // this.$router.push('/completion-relawan').catch(() => { });
+                    message = "Akun anda belum diaktifkan oleh pengurus pusat. Silahkan lengkapi data anda terlebih dahulu setelah itu hubungi pengurus untuk diaktifkan";
+                    color = "orange darken-2";
+                } else if (userDetails[0].status == "inactive" && userDetails[0].role == "pemilih") {
+                    // this.$router.push('/completion-pemilih').catch(() => { });
+                    message = "Akun anda belum diaktifkan oleh koordinator relawan anda. Silahkan lengkapi data anda terlebih dahulu setelah itu hubungi koordinator relawan untuk diaktifkan";
+                    color = "orange darken-2";
+                } else {
+                    message = 'Silahkan menggunakan menu yang ada sebagaimana mestinya';
+                    color = "cyan darken-2";
+                }
+
+                await this.$store.dispatch('setDialog', {
+                    isShowDialog: true,
+                    title: '[Perhatian]',
+                    details: message,
+                    color: color
+                });
+
+                this.$router.push('/').catch(() => { });
+
+            } catch (error) {
+
+            } finally {
+                this.hideOverlayLoading();
+
+
             }
         },
         clear() {
@@ -134,7 +166,8 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['users', 'settings', 'lookups']),
+        ...mapGetters(['users', 'settings', 'lookups', 'isOverlayLoading']),
+
         nomorAnggotaErrors() {
             const errors = [];
             if (!this.$v.nomorAnggota.$dirty) return errors;

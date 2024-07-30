@@ -1,6 +1,4 @@
 <template>
-
-
     <v-card-text class="text--primary">
         <v-alert text dense close-icon="mdi-close-circle-outline" color="cyan darken-2" v-model="alert" elevation="2"
             icon="mdi-information-outline" border="left" dismissible transition="scale-transition">
@@ -11,6 +9,8 @@
 
 <script>
 import axios from 'axios';
+import { mapGetters, mapActions } from 'vuex';
+
 
 export default {
     data() {
@@ -23,43 +23,43 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['showOverlayLoading', 'hideOverlayLoading']),
+
         async logout() {
-            this.isCompletedLoad = true;
+
             try {
-                await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/logout");
 
-                // Clear localStorage
-                localStorage.clear();
-
-                // Set alert response
-                this.response.message = "Logout berhasil";
-                this.alert = true;
-
-                // Redirect to login page
-                setTimeout(() => {
-                    this.$router.push("/login").catch(() => { })
-                        .then(() => { this.$router.go() });
-                }, 1000);
-
+                await this.$store.dispatch('setDialog', {
+                    isShowDialog: true,
+                    title: 'Berhasil Logout',
+                    details: 'Berhasil logout',
+                    color: "cyan darken-2"
+                });
+                this.$store.dispatch('logout');
+                this.$router.push('/login').catch(() => { });
 
             } catch (error) {
                 // Handle error
                 localStorage.clear();
                 this.response.message = "Logout gagal";
                 this.alert = false;
-                console.log(error);
                 setTimeout(() => {
                     this.$router.push("/login").catch(() => { })
                         .then(() => { this.$router.go() });
                     localStorage.clear();
                 }, 1000);
             } finally {
-                this.isCompletedLoad = false;
+
+                this.$store.dispatch('logout');
+
             }
         }
     },
-    created() {
-        this.logout();
+    computed: {
+        ...mapGetters(['users', 'settings', 'lookups', 'isOverlayLoading'])
+    },
+    async mounted() {
+        await this.logout();
     }
 }
 </script>

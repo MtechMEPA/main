@@ -1,4 +1,4 @@
-<template >
+<template>
     <v-main>
         <v-container>
             <v-row>
@@ -14,7 +14,7 @@
     </v-main>
 
 </template>
-  
+
 <script>
 import { mapState } from "vuex";
 export default {
@@ -54,7 +54,6 @@ export default {
 
             }
             this.$store.dispatch('breadcrumData', datas);
-            console.log(this.$route.params) // outputs 'yay'
 
         }
     },
@@ -62,4 +61,4 @@ export default {
         this.setBreadcrumsData();
     }
 }
-</script> 
+</script>

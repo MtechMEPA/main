@@ -1,3 +1,4 @@
+// store/index.js
 import Vue from 'vue'
 import Vuex from 'vuex'
 import employees from './modules/employee'
@@ -12,12 +13,16 @@ import unknown from './modules/unknown'
 import historys from './modules/history'
 import staticData from './modules/staticData'
 import auth from './modules/auth'; // Import modul auth
-// import dialog from './modules/dialog'; // Import modul auth
+import loading from './modules/loading'; // Import modul auth
+
+import dialog from './modules/dialog'; // Import modul auth
 
 
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
+    dialog,
+    loading,
     staticData,
     auth,
     employees,
