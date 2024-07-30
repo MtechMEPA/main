@@ -1,229 +1,73 @@
 <template>
-    <form>
-        <v-card class="mx-auto my-15" max-width="800" outlined elevation="5">
+    <v-container>
+        <v-card class="mx-auto" max-width="800" outlined elevation="5">
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
+
             <v-card-title class="justify-center">
                 <div class="col-12 text-center">
-                    <h2 color="blue-grey">Lengkapi Data Relawan</h2>
+                    <h2>Profil Admin</h2>
                 </div>
             </v-card-title>
+
             <v-card-subtitle class="text-center">
-                <p>Mohon lengkapi data berikut untuk menyelesaikan pendaftaran Anda.</p>
+                <p>Berikut data profil anda yang sudah tersimpan, mohon dilengkapi jika masih ada yang kurang.</p>
             </v-card-subtitle>
+
+            <v-alert v-if="!this.response.error" text dense close-icon="mdi-close-circle-outline" color="cyan darken-2"
+                v-model="alert" elevation="2" icon="mdi-information-outline" border="left" dismissible
+                transition="scale-transition">
+                {{ response.message }}
+            </v-alert>
+
             <v-card-text class="text--primary">
-                <v-alert v-if="!this.response.error" text dense close-icon="mdi-close-circle-outline"
-                    color="cyan darken-2" v-model="alert" elevation="2" icon="mdi-information-outline" border="left"
-                    dismissible transition="scale-transition">
-                    {{ response.message }}
-                </v-alert>
+                <template v-if="!isEditing">
 
-                <!-- Bagian 1: Data Diri -->
-                <v-row class="mb-4">
-                    <v-col cols="12">
-                        <h3>1. Data Diri</h3>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="name" :error-messages="nameErrors" label="Nama" required
-                            @input="$v.name.$touch()" @blur="$v.name.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="email" :error-messages="emailErrors" label="Email"
-                            required @input="$v.email.$touch()" @blur="$v.email.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="phone" :error-messages="phoneErrors" label="Tlp/WhatsApp"
-                            required @input="$v.phone.$touch()" @blur="$v.phone.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="address" :error-messages="addressErrors" label="Alamat"
-                            required @input="$v.address.$touch()" @blur="$v.address.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-select outlined dense v-model="gender" item-text="name" item-value="jeniskelaminID"
-                            :items="jeniskelamin" label="Jenis Kelamin" required :error-messages="genderErrors"
-                            @input="$v.gender.$touch()" @blur="$v.gender.$touch()"></v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="birthDate" label="Tanggal Lahir" type="date" required
-                            :error-messages="birthDateErrors" @input="$v.birthDate.$touch()"
-                            @blur="$v.birthDate.$touch()"></v-text-field>
-                    </v-col>
-                </v-row>
-
-                <!-- Bagian 2: Upload KTP -->
-                <v-row class="mb-4">
-                    <template>
+                    <v-row class="mb-4">
                         <v-col cols="12">
-                            <v-card class="pa-4">
-                                <v-card-title class="headline">Upload KTP/SIM</v-card-title>
-                                <v-card-subtitle>
-                                    <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
-                                        label="Pilih File" accept="image/*" required :error-messages="personIDErrors"
-                                        @input="$v.personID.$touch()" @blur="$v.personID.$touch()"></v-file-input>
-                                </v-card-subtitle>
-
-                                <v-divider></v-divider>
-
-                                <v-card-actions>
-                                    <div v-if="isUploadLoading">
-                                        <v-progress-circular indeterminate color="primary"
-                                            class="ma-4"></v-progress-circular>
-                                    </div>
-
-                                    <v-alert v-if="imageLink != ''" type="success" color="green" border="left"
-                                        icon="mdi-check-circle-outline" class="ma-4">
-                                        KTP/SIM sudah tersimpan
-                                    </v-alert>
-
-                                    <a :href="imageLink" v-if="imageLink != ''">
-                                        <v-img :src="imageLink" class="my-4" max-width="50" max-height="50"></v-img>
-                                    </a>
-                                </v-card-actions>
-                            </v-card>
+                            <h3>1. Data Diri</h3>
                         </v-col>
-                    </template>
-                </v-row>
+                        <v-col cols="12">
+                            <p><strong>Nama:</strong> {{ name }}</p>
+                            <p><strong>Email:</strong> {{ email }}</p>
+                            <p><strong>Tlp/WhatsApp:</strong> {{ phone }}</p>
+                            <p><strong>Alamat:</strong> {{ address }}</p>
+                            <p><strong>Jenis Kelamin:</strong> {{ gender }}</p>
+                            <p><strong>Tanggal Lahir:</strong> {{ birthDate }}</p>
+                            <p v-if="imageLink != ''"><strong>Gambar KTP/SIM:</strong> <img :src="imageLink"
+                                    width="200"></p>
+                        </v-col>
+                    </v-row>
 
-                <!-- Bagian 3: Alamat Tinggal / Daerah Pemilihan -->
-                <v-row class="mb-4">
-                    <v-col cols="12">
-                        <h3>3. Alamat Tinggal / Daerah Pemilihan</h3>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-select outlined dense v-model="regency" :error-messages="regencyErrors"
-                            @input="$v.regency.$touch()" @blur="$v.regency.$touch()" :items="regencies" item-text="name"
-                            item-value="id" label="Kabupaten/Kota" @change="onRegencyChange" required></v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-select outlined dense v-model="district" :items="districts" item-text="name" item-value="id"
-                            label="Kecamatan" required :error-messages="districtErrors" @input="$v.district.$touch()"
-                            @blur="$v.district.$touch()"></v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="ward" label="Kelurahan" required
-                            :error-messages="wardErrors" @input="$v.ward.$touch()"
-                            @blur="$v.ward.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="village" label="Desa" required
-                            :error-messages="villageErrors" @input="$v.village.$touch()"
-                            @blur="$v.village.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="rt" label="RT" required :error-messages="rtErrors"
-                            @input="$v.rt.$touch()" @blur="$v.rt.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-text-field outlined dense v-model="rw" label="RW" required :error-messages="rwErrors"
-                            @input="$v.rw.$touch()" @blur="$v.rw.$touch()"></v-text-field>
-                    </v-col>
-                </v-row>
+                    <v-row class="mb-4">
+                        <v-col cols="12">
+                            <h3>2. Alamat Tinggal / Daerah Pemilihan</h3>
+                        </v-col>
+                        <v-col cols="12">
+                            <p><strong>Kabupaten/Kota:</strong> {{ regency }}</p>
+                            <p><strong>Kecamatan:</strong> {{ district }}</p>
+                            <p><strong>Kelurahan:</strong> {{ ward }}</p>
+                            <p><strong>Desa:</strong> {{ village }}</p>
+                            <p><strong>RT:</strong> {{ rt }}</p>
+                            <p><strong>RW:</strong> {{ rw }}</p>
+                        </v-col>
+                    </v-row>
 
-                <!-- Bagian 4: Data Daerah pemenangan Relawan -->
-                <v-row class="mb-4">
-                    <v-col cols="12">
-                        <h3>4. Data Daerah Pemenangan Relawan</h3>
-                    </v-col>
-                    <v-col cols="12" sm="12">
-                        <v-text-field outlined dense v-model="volunteerName" label="Nama Relawan" required
-                            :error-messages="volunteerNameErrors" @input="$v.volunteerName.$touch()"
-                            @blur="$v.volunteerName.$touch()"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-select outlined dense v-model="volunteersRegencyID"
-                            :error-messages="volunteersRegencyIDErrors" @input="$v.volunteersRegencyID.$touch()"
-                            @blur="$v.volunteersRegencyID.$touch()" :items="regencies" item-text="name" item-value="id"
-                            label="Kabupaten/Kota" @change="onRegencyRelawanChange" required></v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                        <v-select outlined dense v-model="volunteersDistrictID" :items="districtsVolunteer"
-                            item-text="name" item-value="id" label="Kecamatan" required
-                            :error-messages="volunteersDistrictIDErrors" @input="$v.volunteersDistrictID.$touch()"
-                            @blur="$v.volunteersDistrictID.$touch()"></v-select>
-                    </v-col>
-                    <v-col cols="12">
-                        <v-textarea outlined dense v-model="volunteersDescription" label="Deskripsi Relawan" required
-                            :error-messages="volunteersDescriptionErrors" @input="$v.volunteersDescription.$touch()"
-                            @blur="$v.volunteersDescription.$touch()"></v-textarea>
-                    </v-col>
-                </v-row>
 
-                <!-- Bagian 5: Review/Summary -->
-                <v-row class="mb-4">
-                    <v-col cols="12">
-                        <h3>5. Review/Summary</h3>
-                    </v-col>
-                    <v-col cols="12">
+                    <v-row class="mb-4">
+                        <v-col cols="12">
+                            <h3>3. Daerah Pemenangan Relawan</h3>
+                        </v-col>
+                        <v-col cols="12">
+                            <p><strong>Nama Relawan:</strong> {{ volunteerName }}</p>
+                            <p><strong>Kabupaten/Kota Pemenangan:</strong> {{ volunteersRegencyName }}</p>
+                            <p><strong>Kecamatan Pemenangan:</strong> {{ volunteersDistrictName }}</p>
 
-                        <v-card>
-                            <v-card-title>Summary</v-card-title>
-                            <v-card-subtitle>Berikut adalah data yang telah Anda masukkan:</v-card-subtitle>
-                            <v-card-text>
-                                <p><strong>Nomor Anggota:</strong> {{ username }}</p>
-                                <p><strong>Nama:</strong> {{ name }}</p>
-                                <p><strong>Email:</strong> {{ email }}</p>
-                                <p><strong>Tlp/WhatsApp:</strong> {{ phone }}</p>
-                                <p><strong>Alamat:</strong> {{ address }}</p>
-                                <p><strong>Jenis Kelamin:</strong> {{ gender }}</p>
-                                <p><strong>Tanggal Lahir:</strong> {{ birthDate }}</p>
-                                <p><strong>Kabupaten/Kota:</strong> {{ regency }}</p>
-                                <p><strong>Kecamatan:</strong> {{ district }}</p>
-                                <p><strong>Kelurahan:</strong> {{ ward }}</p>
-                                <p><strong>Desa:</strong> {{ village }}</p>
-                                <p><strong>RT:</strong> {{ rt }}</p>
-                                <p><strong>RW:</strong> {{ rw }}</p>
-                                <p v-if="imageLink != ''"><strong>Gambar KTP/SIM:</strong> <img :src="imageLink"
-                                        width="200"></p>
-                                <p><strong>Nama Relawan:</strong> {{ volunteerName }}</p>
-                                <p><strong>Kabupaten/Kota Pemenangan:</strong> {{ volunteersRegencyName }}</p>
-                                <p><strong>Kecamatan Pemenangan:</strong> {{ volunteersDistrictName }}</p>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                </v-row>
+                        </v-col>
+                    </v-row>
+                </template>
             </v-card-text>
-
-            <v-card-actions>
-                <v-btn :disabled="!isValid || isCompletedLoad" class="mr-4 white--text" color="cyan darken-2"
-                    @click="submitForm">
-                    <v-icon>mdi-floppy</v-icon> Submit
-                </v-btn>
-                <v-btn text class="mr-4 white--text" color="blue-grey" @click="clearForm">
-                    <v-icon>mdi-cached</v-icon> Clear
-                </v-btn>
-            </v-card-actions>
-
-            <v-dialog v-model="showDialog" scrollable persistent width="600px">
-                <v-card>
-                    <v-card-title>Data Relawan Berhasil Tersimpan
-                        <v-spacer></v-spacer>
-                        <v-btn color="cyan darken-2" icon @click="closeDialog">
-                            <v-icon>
-                                mdi-close
-                            </v-icon>
-                        </v-btn>
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-card-text>
-                        <div class="mb-2">
-                            <v-alert text dense color="green darken-2" elevation="2" icon="mdi-information-outline"
-                                border="left" transition="scale-transition">
-                                Data anda sudah tersimpan! <br>
-                                Pengurus pusat akan melakukan review terhadap data anda.
-                            </v-alert>
-                        </div>
-                    </v-card-text>
-                    <v-divider></v-divider>
-                    <v-card-actions>
-                        <v-btn color="cyan darken-2" @click="closeDialog" text>
-                            OK
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-
         </v-card>
-    </form>
+    </v-container>
 </template>
 
 <script>
@@ -263,6 +107,7 @@ export default {
     },
     data() {
         return {
+            isEditing: false,
             isCompletedLoad: false,
             name: '',
             email: '',

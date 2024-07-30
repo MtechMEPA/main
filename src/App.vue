@@ -1,12 +1,10 @@
 <template>
   <v-app dark>
-    <v-alert v-if="alertVisible" text dense close-icon="mdi-close-circle-outline" color="cyan darken-2" elevation="2"
-      icon="mdi-information-outline" border="left" dismissible transition="scale-transition"
-      @click:close="alertVisible = false">
-      {{ alertMessage }}
-    </v-alert>
+
+    <LoadingOverlay />
     <v-container>
-      <C_Header v-if="isLoggedIn" />
+      <C_Header v-if="isLogin" />
+      <GeneralDialogComponent />
       <router-view />
     </v-container>
   </v-app>
@@ -16,13 +14,19 @@
 import axios from 'axios';
 import C_Header from '@/components/C_Header.vue';
 import Footers from '@/components/C_Footer.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
+import GeneralDialogComponent from '@/components/GeneralDialogComponent.vue';
+
+
 
 export default {
   name: "app",
   components: {
     C_Header,
-    Footers
+    Footers,
+    LoadingOverlay,
+    GeneralDialogComponent
   },
   data() {
     return {
@@ -32,21 +36,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isLoggedIn', 'username']),
+    ...mapGetters(['isLoggedIn', 'username', 'isOverlayLoading', 'userLogin']),
 
     isLogin() {
       var status = false;
-      if (localStorage.getItem('token') != null) {
+      if (this.isLoggedIn) {
         status = true;
       }
-      console.log(status);
       return status;
-    },
-    initDataAfterLogin() {
-      return localStorage.getItem('successLogin') === 'true';
     }
   },
   methods: {
+    ...mapActions(['showOverlayLoading', 'hideOverlayLoading', 'setUserData', 'updateDialog']),
+
     async logout() {
       this.isCompletedLoad = true;
       try {
@@ -69,7 +71,6 @@ export default {
         // Handle error
         this.alertMessage = "Logout gagal";
         this.alertVisible = true;
-        console.log(error);
       } finally {
         this.isCompletedLoad = false;
       }
@@ -88,7 +89,7 @@ export default {
     setMobileDeviceSettings() {
       const datas = { isMobileData: this.isMobile() };
       this.$store.dispatch('settings', datas);
-    }
+    },
   },
   watch: {
     $route: {
@@ -100,9 +101,6 @@ export default {
   },
   created() {
     this.setMobileDeviceSettings();
-    if (this.initDataAfterLogin) {
-      // Optionally do something after login
-    }
   }
 }
 </script>

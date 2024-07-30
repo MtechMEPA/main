@@ -1,31 +1,29 @@
 // store/dialog.js
 export const state = () => ({
-  dialogState: {
-    dialogData: {
-      isShowDialog: false,
-      data: {
-        title: '',
-        details: ''
-      }
-    }
+  dialogData: { 
+      isShowDialog: false, 
+      title: '',
+      details: '',
+      color: '' 
+ 
   }
 });
 
 export const mutations = {
   updateDialogData(state, dialogData) {
-    state.dialogState.dialogData = dialogData;
+    state.dialogData = dialogData;
   }
 };
 
 export const actions = {
-  updateDialog({ commit }, dialogData) {
+  setDialog({ commit }, dialogData) {
     commit('updateDialogData', dialogData);
   }
 };
 
 export const getters = {
-  dialogData: (state) => state.dialogState.dialogData,
-  isShowDialog: (state) => state.dialogState.dialogData.isShowDialog
+  dialogData: (state) => state.dialogData,
+  isShowDialog: (state) => state.dialogData.isShowDialog
 };
 
 

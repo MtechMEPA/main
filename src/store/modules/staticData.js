@@ -145,18 +145,53 @@ const state = () => ({
             ]
         }
     ],
+    menus:[
+        {
+            name: "Home",
+            path: "/",
+            icon: "mdi-home-roof",
+            role:  ['relawan',   'pemilih',  'admin' ],
+            status : ['inactive','active']
+        },
+        {
+            name: "Lengkapi Data Pemilih",
+            path: "/completion-pemilih",
+            icon: "mdi-phone",
+            role:  ['pemilih'],
+            status : ['inactive']
+        },
+        {
+            name: "Lengkapi Data Relawan",
+            path: "/completion-relawan",
+            icon: "mdi-phone",
+            role:  ['relawan'],
+            status : ['inactive']
+        },
+        {
+            name: "Report",
+            path: "/report",
+            icon: "mdi-phone",
+            role:  ['admin'],
+            status : ['active']
+        },
+    ]
   });
   
   const mutations = {
-   
+    SET_MENUS(state, menus) {
+        state.menus = menus;
+      }
   };
   
   const actions = {
-   
+    setDialog({ commit }, menus) {
+        commit('SET_MENUS', menus);
+      }
   };
   
   const getters = {
-    regencies: (state) => state.regencies
+    regencies: (state) => state.regencies,
+    menus : (state) => state.menus,
   };
   
   export default {

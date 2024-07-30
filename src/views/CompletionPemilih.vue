@@ -1,17 +1,12 @@
 <template>
     <v-container>
-        <v-card class="mx-auto my-15" max-width="800" outlined elevation="5">
+        <v-card class="mx-auto" max-width="800" outlined elevation="5">
             <v-progress-linear v-show="isCompletedLoad" indeterminate color="cyan darken-2"></v-progress-linear>
 
             <v-card-title class="justify-center">
-                <v-spacer></v-spacer>
-                <div class="col-12">
-                    <center>
-                        <img src="../assets/logomepa.png" alt="" srcset="" width="40%">
-                        <h2>Lengkapi Data Pemilih</h2>
-                    </center>
+                <div class="col-12 text-center">
+                    <h2>Lengkapi Data Pemilih</h2>
                 </div>
-                <v-spacer></v-spacer>
             </v-card-title>
 
             <v-card-subtitle class="text-center">
@@ -59,9 +54,9 @@
                             required @input="$v.address.$touch()" @blur="$v.address.$touch()"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6">
-                        <v-select outlined dense v-model="gender" :items="['male', 'female']" label="Jenis Kelamin"
-                            required :error-messages="genderErrors" @input="$v.gender.$touch()"
-                            @blur="$v.gender.$touch()"></v-select>
+                        <v-select outlined dense v-model="gender" item-text="name" item-value="jeniskelaminID"
+                            :items="jeniskelamin" label="Jenis Kelamin" required :error-messages="genderErrors"
+                            @input="$v.gender.$touch()" @blur="$v.gender.$touch()"></v-select>
                     </v-col>
                     <v-col cols="12" sm="6">
                         <v-text-field outlined dense v-model="birthDate" label="Tanggal Lahir" type="date" required
@@ -70,28 +65,37 @@
                     </v-col>
                 </v-row>
 
-                <!-- Bagian 3: Upload KTP -->
+                <!-- Bagian 2: Upload KTP -->
                 <v-row class="mb-4">
-                    <v-col cols="12">
-                        <h3>3. Upload KTP</h3>
-                    </v-col>
-                    <v-col cols="12">
-                        <div>
-                            <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
-                                label="Upload KTP/SIM" accept="image/*" required :error-messages="personIDErrors"
-                                @input="$v.personID.$touch()" @blur="$v.personID.$touch()"></v-file-input>
+                    <template>
+                        <v-col cols="12">
+                            <v-card class="pa-4">
+                                <v-card-title class="headline">Upload KTP/SIM</v-card-title>
+                                <v-card-subtitle>
+                                    <v-file-input ref="fileInput" outlined dense v-model="personID" @change="uploadFile"
+                                        label="Pilih File" accept="image/*" required :error-messages="personIDErrors"
+                                        @input="$v.personID.$touch()" @blur="$v.personID.$touch()"></v-file-input>
+                                </v-card-subtitle>
 
-                            <div v-if="isUploadLoading">
-                                <v-progress-circular indeterminate color="primary"></v-progress-circular>
-                            </div>
+                                <v-divider></v-divider>
 
-                            <div>
-                                <span class="mb-2" color="text--green" v-if="imageLink != ''">KTP/SIM berhasil
-                                    tersimpan</span>
-                            </div>
-                            <img v-if="imageLink != ''" :src="imageLink" class="col-5" alt="" width="40%">
-                        </div>
-                    </v-col>
+                                <v-card-actions>
+                                    <div v-if="isUploadLoading">
+                                        <v-progress-circular indeterminate color="primary"
+                                            class="ma-4"></v-progress-circular>
+                                    </div>
+                                    <v-alert v-if="imageLink != ''" type="success" color="green" border="left"
+                                        icon="mdi-check-circle-outline" class="ma-4">
+                                        KTP/SIM sudah tersimpan
+                                    </v-alert>
+
+                                    <a :href="imageLink" v-if="imageLink != ''">
+                                        <v-img :src="imageLink" class="my-4" max-width="50" max-height="50"></v-img>
+                                    </a>
+                                </v-card-actions>
+                            </v-card>
+                        </v-col>
+                    </template>
                 </v-row>
 
                 <!-- Bagian 4: Alamat Tinggal / Daerah Pemilihan -->
@@ -209,9 +213,11 @@
 
 <script>
 import axios from 'axios';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, maxLength, email as emailValidator, minLength, numeric } from 'vuelidate/lib/validators';
+import { scrollToTop } from '@/helpers/scrollHelper';
+import { formatDateToDDMMYYYY, parseDateToYYYYMMDD } from '@/helpers/dateHelpers';
 
 const maxlength15 = 15;
 const minlength10 = 10;
@@ -244,15 +250,15 @@ export default {
             phone: '',
             address: '',
             gender: '',
-            personID: null,
+            personID: '',
             birthDate: '',
-            regency: null,
-            district: null,
+            regency: '',
+            district: '',
             ward: '',
             village: '',
             rt: '',
             rw: '',
-            parent: null,
+            parent: '',
 
             alert: false,
             showDialog: false,
@@ -262,15 +268,23 @@ export default {
                 data: [],
                 error: {}
             },
-            // regencies: [],
-
             districts: [],
             listParentUsers: [],
+            jeniskelamin: [
+                {
+                    jeniskelaminID: "male",
+                    name: "Laki-Laki"
+                },
+                {
+                    jeniskelaminID: "female",
+                    name: "Perempuan"
+                }
+            ],
             isUploadLoading: false
         };
     },
     computed: {
-        ...mapGetters(['isLoggedIn', 'username', 'userDetails', 'token', 'regencies']),
+        ...mapGetters(['isLoggedIn', 'username', 'userData', 'token', 'regencies', 'isOverlayLoading', 'userLogin']),
         isValid() {
             return !this.$v.$invalid;
         },
@@ -292,9 +306,10 @@ export default {
 
     },
     methods: {
+        ...mapActions(['showOverlayLoading', 'hideOverlayLoading']),
         async submitForm() {
             this.$v.$touch();
-
+            this.showOverlayLoading();
             if (this.isValid) {
                 this.isCompletedLoad = true;
                 const formData = new FormData();
@@ -332,22 +347,20 @@ export default {
                         this.alert = true;
                     })
                     .finally(() => {
+                        this.hideOverlayLoading();
                         this.isCompletedLoad = false;
+                        scrollToTop();
                     });
             }
         },
         async fetchParentUsers() {
 
-            const userDetailsParam = {};
-            axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam).then((value) => {
-                if (value.data) {
-                    var tempData = value.data.data.filter(volunteer => volunteer.role === "relawan" && volunteer.status === "active");
-                    if (tempData != []) {
-                        this.listParentUsers = tempData;
-                    }
+            if (this.userData) {
+                var tempData = this.userData.filter(volunteer => volunteer.role === "relawan" && volunteer.status === "active");
+                if (tempData) {
+                    this.listParentUsers = tempData;
                 }
-            });
-
+            }
 
         },
         async uploadFile(event) {
@@ -364,7 +377,7 @@ export default {
                 );
                 // this.personID = response.data.data.name;
                 if (response.data && response.data.data) {
-                    this.imageLink = process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + response.data.data.name;
+                    this.imageLink = response.data.data.name != null ? process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + response.data.data.name : '';
                 }
             } catch (error) {
                 this.response.error = { ...this.response.error, fileUpload: 'File upload failed' };
@@ -389,8 +402,10 @@ export default {
 
             this.$v.$reset();
         },
-        editForm(userDetails) {
-            if (userDetails) {
+        editForm() {
+            if (this.userLogin) {
+                var userDetails = this.userLogin;
+
                 this.parent = userDetails.parent;
                 this.name = userDetails.name;
                 this.email = userDetails.email;
@@ -404,7 +419,7 @@ export default {
                 this.village = userDetails.village;
                 this.rt = userDetails.rt;
                 this.rw = userDetails.rw;
-                this.imageLink = process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + userDetails.attachmentName;
+                this.imageLink = userDetails.attachmentName != null ? process.env.VUE_APP_SERVICE_URL + "core/public/attachment/" + userDetails.attachmentName : '';
                 this.onRegencyChange(this.regency);
                 this.district = userDetails.district;
             }
@@ -437,19 +452,18 @@ export default {
         },
         closeDialog() {
             this.showDialog = false;
-            this.$router.go(0);
         },
         async fetchUserDetails() {
             try {
+                // Jika login berhasil, panggil API search/user
                 const userDetailsParam = { "volunteerID": this.username };
                 const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
-                const userDetails = userDetailsRes.data.data[0];
-                this.editForm(userDetails);
-                await this.$store.dispatch('login', { token: localStorage.getItem('token'), username: this.username, userDetails });
+                const userDetails = userDetailsRes.data.data;
+                await this.$store.dispatch('setUserLogin', { userLogin: userDetails[0] });
+                this.editForm();
             } catch (error) {
-                console.log(error);
-            }
 
+            }
         },
         onRegencyChange(regencyId) {
             const regency = this.regencies.find(reg => reg.id === regencyId);
@@ -458,8 +472,15 @@ export default {
         }
     },
     async created() {
+        this.showOverlayLoading();
         await this.fetchParentUsers();
-        await this.fetchUserDetails();
+        this.hideOverlayLoading();
+    },
+    mounted() {
+        this.showOverlayLoading();
+        this.editForm();
+        this.hideOverlayLoading();
+
     }
 }
 </script>

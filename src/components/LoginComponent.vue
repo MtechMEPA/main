@@ -105,7 +105,6 @@ export default {
 
                     }).catch(error => {
                         this.alert = true;
-                        console.log(error);
                         this.response.fail = error.response.message;
 
                     });

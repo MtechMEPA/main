@@ -1,38 +1,11 @@
 <template>
-  <v-dialog v-model="isShowDialog" scrollable persistent width="600px">
-    <v-card>
-      <v-card-title>{{ dialogData.title || 'Default Title' }}
-        <v-spacer></v-spacer>
-        <v-btn :color="settings.color" icon class="white--text" @click="closeDialog">
-          <v-icon>
-            mdi-close
-          </v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-divider></v-divider>
-      <v-card-text>
-        <div v-if="hasDetails">
-          <v-simple-table>
-            <tbody>
-              <tr v-for="(value, key) in dialogData.details" :key="key">
-                <td><strong>{{ formatLabel(key) }}</strong></td>
-                <td>{{ formatValue(key, value) }}</td>
-              </tr>
-            </tbody>
-          </v-simple-table>
-        </div>
-        <div v-else>
-          No details available.
-        </div>
-      </v-card-text>
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-btn :color="settings.color" @click="closeDialog" class="white--text" text>
-          OK
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <div class="mt-5">
+    <v-alert v-if="isShowDialog" text dense close-icon="mdi-close-circle-outline" :color="dialogData.color"
+      elevation="2" icon="mdi-information-outline" border="left" dismissible transition="scale-transition"
+      @click="closeDialog">
+      {{ dialogData.title }} - {{ dialogData.details }}
+    </v-alert>
+  </div>
 </template>
 
 <script>
@@ -40,46 +13,17 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters({
-      dialogData: 'getDialogData',
-      isShowDialog: 'isDialogVisible'
-    }),
-    hasDetails() {
-      return this.dialogData.details && Object.keys(this.dialogData.details).length > 0;
-    }
+    ...mapGetters(['isShowDialog', 'dialogData'])
   },
   methods: {
     closeDialog() {
-      this.$store.dispatch('updateDialog', {
+      this.$store.dispatch('setDialog', {
         isShowDialog: false,
-        data: {
-          title: '',
-          details: {}
-        }
+        title: '',
+        details: '',
+        color: ''
       });
-    },
-    formatLabel(key) {
-      const labels = {
-        volunteerID: 'Nomor Anggota',
-        name: 'Nama',
-        phone: 'Tlp/WhatsApp',
-        email: 'Email',
-        role: 'Jenis'
-      };
-      return labels[key] || key;
-    },
-    formatValue(key, value) {
-      if (key === 'role') {
-        return value.toUpperCase();
-      }
-      return value;
     }
   }
 };
 </script>
-
-<style scoped>
-td {
-  padding: 8px;
-}
-</style>

@@ -1,162 +1,34 @@
 <template>
-    <v-row>
-        <v-col lg="12" class="text--disabled">
-            <h1 class="font-weight-medium">Selamat datang di Meki Nawipa - MEPA</h1>
-            <span class="description" :color="color">Sebuah tools yang dirancang untuk membantu proses penelusuran
-                data Relawan dan Pemilih Loyal Meki Nawipa</span>
 
-        </v-col>
-        <v-col cols="4">
-            <template>
-                <v-card class="mx-auto">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                Relawan
-                            </v-list-item-title>
-                            <v-list-item-subtitle>Total data relawan</v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-card-text>
-                        <v-row align="center">
-                            <v-col class="text-h2" cols="8">
-                                {{ listCountData.totalInbox }}
-                            </v-col>
-                            <v-col cols="4">
-                                <v-icon class="text-h2 text--disabled">mdi-email-outline</v-icon>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </template>
-        </v-col>
-
-        <v-col cols="4">
-            <template>
-                <v-card class="mx-auto">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                Pemilih
-                            </v-list-item-title>
-                            <v-list-item-subtitle>Total data pemilih</v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-card-text>
-                        <v-row align="center">
-                            <v-col class="text-h2" cols="8">
-                                {{ listCountData.totalOutbox }}
-                            </v-col>
-                            <v-col cols="4">
-                                <v-icon class="text-h2 text--disabled">mdi-email-fast-outline</v-icon>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </template>
-        </v-col>
-
-        <v-col cols="4">
-            <template>
-                <v-card class="mx-auto">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                Total
-                            </v-list-item-title>
-                            <v-list-item-subtitle>Total keseluruhan data</v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-card-text>
-                        <v-row align="center">
-                            <v-col class="text-h2" cols="8">
-                                {{ listCountData.totalNadine }}
-                            </v-col>
-                            <v-col cols="4">
-                                <v-icon class="text-h2 text--disabled">mdi-database-check-outline</v-icon>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </template>
-        </v-col> 
-    </v-row>
+    <HomePemilih v-if="userLogin && userLogin.role == 'pemilih'" />
+    <HomeRelawan v-else-if="userLogin && userLogin.role == 'relawan'" />
+    <HomeAdmin v-else-if="userLogin && userLogin.role == 'admin'" />
 </template>
 
 <script>
 import axios from 'axios';
 import moment from 'moment';
-import { mapState } from "vuex";
+
+import HomePemilih from '@/components/HomePemilih.vue';
+import HomeRelawan from '@/components/HomeRelawan.vue';
+import HomeAdmin from '@/components/HomeAdmin.vue';
+import { mapGetters } from "vuex";
 export default {
     name: "Hero",
+    components: {
+        HomePemilih,
+        HomeRelawan,
+        HomeAdmin
+    },
+    created() {
+        this.headerValue = this.userLogin;
+    },
     computed: {
-        ...mapState(['settings'])
+        ...mapGetters(['userLogin'])
     },
     data() {
         return {
-            color: "grey darken-2",
-            searchValue: "",
-            search: "",
-            headerprops: {
-                "sort-icon": "mdi-arrow-up"
-            },
-            headers: [
-                { text: 'No', value: 'num' },
-                { text: 'No.Agenda', value: 'nomorAgenda' },
-                { text: 'Tgl.Penerimaan', value: 'tglPenerimaanDisplayText' },
-                { text: 'No.Surat', value: 'nomorSurat' },
-                { text: 'Tgl.Surat', value: 'tglSuratDisplayText' },
-                { text: 'Sifat Surat', value: 'sifatSurat' },
-                { text: 'Dari', value: 'dari' },
-                { text: 'Kepada', value: 'kepada', width: '15%' },
-                { text: 'Isi Ringkasan', value: 'isiRingkasan' },
-                { text: 'Keterangan', value: 'keterangan', width: '10%' },
-                { text: 'Uploader', value: 'unitUploader', width: '5%' },
-                { text: 'Duplication', value: 'isUnknown', width: '5%' },
-
-            ],
-            listCountData: {
-                totalInbox: 0,
-                totalOutbox: 0,
-                totalNadine: 0,
-            },
-            listData: [],
-            isLoading: false,
-            isOverlayLoading: false,
-            filter: {
-                range: true,
-                sifatSurat: "",
-                noAgenda: "",
-                noSurat: "",
-                dari: "",
-                kepada: "",
-                ket: "",
-                isiRingkasan: "",
-                dateActionTerima: [],
-                dateActionSurat: [],
-                tglTerimaStart: "",
-                tglTerimaEnd: "",
-                tglSuratStart: "",
-                tglSuratEnd: "",
-                modalDateTglTerima: null,
-                modalDateTglSurat: null,
-                searchingParams: [],
-                unknownModelData: "",
-                listUploaderData: ""
-            },
-            isShowTable: false,
-            historyListData: {
-                header: [],
-                subHeader: []
-            },
-            isOverlayLoading: false,
-            trackingId: "",
-            dialogDetail: false,
-            detailDataRow: [],
-            loadingUploadButton: false
+            headerValue: null
         }
     },
     methods: {
@@ -164,7 +36,6 @@ export default {
             try {
                 await axios.get(process.env.VUE_APP_SERVICE_URL + "employee");
             } catch (error) {
-                console.log(error);
                 this.isLoading = false;
             }
         },
@@ -189,7 +60,6 @@ export default {
                 this.isLoading = false;
                 this.isOverlayLoading = false;
             } catch (error) {
-                console.log(error);
                 this.isLoading = false;
                 this.responseAlert.message = 'Something wrong, please refresh the page to fix this issue. detail : ' + error.message;
                 this.responseAlert.color = "red";
@@ -230,7 +100,6 @@ export default {
                 this.historyListData.subHeader = dataVal.headerDetail;
                 this.isOverlayLoading = false;
             } catch (error) {
-                console.log(error);
                 this.isOverlayLoading = false;
             }
         },
@@ -249,12 +118,6 @@ export default {
             return this.historyListData.subHeader.filter((e) => e.unitFrom === item.unitFromCode)
                 .map((e) => { return e });
         },
-    },
-    async created() {
-        var listData = JSON.parse(localStorage.getItem('userData'));
-        this.users = listData != undefined && listData.user ? listData.user : [];
-        await this.getData();
-        await this.getCountPage();
     }
 }
 </script>
