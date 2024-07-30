@@ -104,7 +104,7 @@ router.beforeEach((to, from, next) => {
       isShowDialog: true,
         title: 'Perhatian',
         details: 'Sesi habis, silahkan login kembali',
-        color: "red darken-2"
+        color: "orange darken-2"
     });
     store.dispatch('logout');
    setTimeout(() => {
