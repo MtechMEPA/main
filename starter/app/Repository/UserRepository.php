@@ -59,4 +59,9 @@ class UserRepository implements IUserRepository
         return $this->userModel->getUserByID($payload);
     }
 
+    public function getStatistic(PersonModel $payload)
+    {
+        return $this->userModel->getStatistic($payload);
+    }
+
 }

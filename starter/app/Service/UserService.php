@@ -75,4 +75,9 @@ class UserService implements IUserService
     {
         return $this->userRepository->getUserByID($payload);
     }
+
+    public function getStatistic(PersonModel $payload)
+    {
+        return $this->userRepository->getStatistic($payload);
+    }
 }

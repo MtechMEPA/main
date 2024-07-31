@@ -13,4 +13,6 @@ interface IUserRepository
     public function getPersonByEmailPassword(PersonModel $payload);
     public function getUsers(PersonModel $payload);
     public function getUserByID(PersonModel $payload);
+    public function getStatistic(PersonModel $payload);
+
 }

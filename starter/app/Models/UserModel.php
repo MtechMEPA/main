@@ -129,9 +129,28 @@ class UserModel extends Model
     {
         $payload = [
             empty($payload->getVolunteerID()) ? null : $payload->getVolunteerID(),
+            empty($payload->getPhone()) ? null : $payload->getPhone(),
+            empty($payload->getName()) ? null : $payload->getName(),
+            empty($payload->getVolunteersRegencyID()) ? null : $payload->getVolunteersRegencyID(),
+            empty($payload->getVolunteersDistrictID()) ? null : $payload->getVolunteersDistrictID(),
+            empty($payload->getVolunteerName()) ? null : $payload->getVolunteerName(),
+            empty($payload->getStatus()) ? null : $payload->getStatus(),
         ];
 
-        $query = $this->db->query("CALL GetUserByID(?)", $payload);
+        $query = $this->db->query("CALL GetUserByID(?,?,?,?,?,?,?)", $payload);
+        $result = $query->getResult();
+        return $result;
+    }
+
+    public function getStatistic($payload)
+    {
+        $payload = [
+            empty($payload->getVolunteersRegencyID()) ? null : $payload->getVolunteersRegencyID(),
+            empty($payload->getVolunteersDistrictID()) ? null : $payload->getVolunteersDistrictID(),
+            empty($payload->getVolunteerName()) ? null : $payload->getVolunteerName(),
+        ];
+
+        $query = $this->db->query("CALL GetStatistics(?,?,?)", $payload);
         $result = $query->getResult();
         return $result;
     }
