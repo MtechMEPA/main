@@ -80,4 +80,10 @@ class UserService implements IUserService
     {
         return $this->userRepository->getStatistic($payload);
     }
+
+    public function getRelawanStatistic()
+    {
+        return $this->userRepository->getRelawanStatistic();
+    }
+
 }

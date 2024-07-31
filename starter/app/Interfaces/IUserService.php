@@ -15,5 +15,6 @@ interface IUserService
     public function getUsers(PersonModel $payload);
     public function getUserByID(PersonModel $payload);
     public function getStatistic(PersonModel $payload);
+    public function getRelawanStatistic();
 
 }

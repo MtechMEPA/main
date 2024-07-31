@@ -145,13 +145,21 @@ class UserModel extends Model
     public function getStatistic($payload)
     {
         $payload = [
-            empty($payload->getVolunteersRegencyID()) ? null : $payload->getVolunteersRegencyID(),
-            empty($payload->getVolunteersDistrictID()) ? null : $payload->getVolunteersDistrictID(),
             empty($payload->getVolunteerName()) ? null : $payload->getVolunteerName(),
+            empty($payload->getVolunteersDistrictID()) ? null : $payload->getVolunteersDistrictID(),
+            empty($payload->getVolunteersRegencyID()) ? null : $payload->getVolunteersRegencyID(),
         ];
 
         $query = $this->db->query("CALL GetStatistics(?,?,?)", $payload);
         $result = $query->getResult();
         return $result;
     }
+
+    public function getRelawanStatistic()
+    {
+        $query = $this->db->query("CALL GetRelawanStatistic()");
+        $result = $query->getResult();
+        return $result;
+    }
+
 }
