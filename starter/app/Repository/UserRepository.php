@@ -64,4 +64,9 @@ class UserRepository implements IUserRepository
         return $this->userModel->getStatistic($payload);
     }
 
+    public function getRelawanStatistic()
+    {
+        return $this->userModel->getRelawanStatistic();
+    }
+
 }

@@ -41,6 +41,7 @@ $routes->group('search', ['filter' => 'jwt'], function ($routes) {
     $routes->post('user', 'Auth::getUsers');
     $routes->post('userByID', 'Auth::getUserByID');
     $routes->post('statistic', 'Auth::getStatistic');
+    $routes->post('relawan/statistic', 'Auth::getRelawanStatistic');
 });
 
 if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {

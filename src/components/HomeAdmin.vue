@@ -1,17 +1,38 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12" class="text--disabled">
-                <h1 class="font-weight-medium text-center">Selamat datang di Meki Nawipa - MEPA</h1>
-                <span class="description text-center d-block" :color="color">Anda masuk sebagai Admin</span>
+            <v-col cols="12" class="text--disabled text-center mb-4">
+                <h1 class="font-weight-medium">Selamat datang di Meki Nawipa - MEPA</h1>
+                <span class="description d-block" :color="color">Anda masuk sebagai Admin</span>
             </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="12" class="mb-4">
+                <v-card>
+                    <v-row class="py-2 px-2">
+                        <v-col class="col-md-5 col-sm-5">
+                            <v-select v-model="selectedRegency" :items="newRegencies" label="Kabupaten/Kota"
+                                item-text="name" item-value="id" @change="onRegencyChange" outlined dense></v-select>
+                        </v-col>
+                        <v-col class="col-md-5 col-sm-5">
+                            <v-select v-model="selectedDistrict" :items="districts" label="Kecamatan" item-text="name"
+                                item-value="id" outlined dense></v-select>
+                        </v-col>
+                        <v-col class="col-md-2 col-sm-2">
+                            <v-btn color="cyan darken-2" @click="filterData" class="white--text">Filter</v-btn>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" md="4" class="mb-4">
                 <v-card class="mx-auto">
                     <v-list-item two-line>
                         <v-list-item-content>
-                            <v-list-item-title class="text-h5">Relawan</v-list-item-title>
-                            <v-list-item-subtitle>Total data relawan</v-list-item-subtitle>
+                            <v-list-item-title class="text-h5">
+                                Relawan
+                                <v-btn to="/relawan" color="cyan" small text>Lihat</v-btn>
+                            </v-list-item-title>
+                            <v-list-item-subtitle>Total data Relawan Terverifikasi</v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-text>
@@ -25,12 +46,15 @@
                 </v-card>
             </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" class="mb-4">
                 <v-card class="mx-auto">
                     <v-list-item two-line>
                         <v-list-item-content>
-                            <v-list-item-title class="text-h5">Pemilih</v-list-item-title>
-                            <v-list-item-subtitle>Total data pemilih</v-list-item-subtitle>
+                            <v-list-item-title class="text-h5">
+                                Pemilih
+                                <v-btn to="/pemilih" color="cyan" small text>Lihat</v-btn>
+                            </v-list-item-title>
+                            <v-list-item-subtitle>Total data Pemilih Terverifikasi</v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
                     <v-card-text>
@@ -44,7 +68,7 @@
                 </v-card>
             </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" class="mb-4">
                 <v-card class="mx-auto">
                     <v-list-item two-line>
                         <v-list-item-content>
@@ -66,15 +90,15 @@
     </v-container>
 </template>
 
+
 <script>
 import axios from 'axios';
-import moment from 'moment';
-import { mapState } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
     name: "Hero",
     computed: {
-        ...mapState(['settings'])
+        ...mapGetters(['isLoggedIn', 'username', 'userData', 'token', 'regencies', 'isOverlayLoading', 'userLogin']),
     },
     data() {
         return {
@@ -84,36 +108,89 @@ export default {
                 totalOutbox: 0,
                 totalNadine: 0,
             },
+            newRegencies: [], // Array for regency list
+            districts: [], // Array for district list
+            selectedRegency: null,
+            selectedDistrict: null,
             isLoading: false,
-            isOverlayLoading: false,
+            // isOverlayLoading: false,
         }
     },
     methods: {
+        ...mapActions(['showOverlayLoading', 'hideOverlayLoading']),
+
         async getData() {
             try {
-                await axios.get(process.env.VUE_APP_SERVICE_URL + "employee");
+                await axios.get(process.env.VUE_APP_SERVICE_URL + "search/statistic");
             } catch (error) {
                 console.log(error);
                 this.isLoading = false;
             }
         },
-        async getCountPage() {
+        async filterData() {
+            this.showOverlayLoading();
+
             try {
-                this.isOverlayLoading = true;
+
                 this.isLoading = true;
-                var response = await axios.get(process.env.VUE_APP_SERVICE_URL + "countPages", { params: { employeeId: this.users.employeeId } });
-                var listData = !!response ? response.data[0] : [];
+
+                var param = {
+                    volunteerName: null,
+                    volunteersDistrictID: this.selectedDistrict,
+                    volunteersRegencyID: this.selectedRegency,
+                };
+
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/statistic", param);
+                const listData = userDetailsRes.data.data[0];
                 if (listData) {
-                    this.listCountData.totalInbox = listData.totalInbox;
-                    this.listCountData.totalOutbox = listData.totalOutbox;
-                    this.listCountData.totalNadine = listData.totalNadine;
+                    this.listCountData.totalInbox = listData.totalRelawanActive;
+                    this.listCountData.totalOutbox = listData.totalPemilihActive;
+                    this.listCountData.totalNadine = listData.totalActive;
+                    console.log(this.listCountData);
                 }
             } catch (error) {
+                console.log(error);
+            } finally {
+                this.isLoading = false;
+                this.hideOverlayLoading();
             }
+        },
+        async loadRegencies() {
+            try {
+
+                this.newRegencies = this.regencies;;
+                this.newRegencies.unshift({ id: null, name: 'All/Semua' });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async loadDistricts() {
+            if (this.selectedRegency) {
+                try {
+                    const response = await axios.get(`${process.env.VUE_APP_SERVICE_URL}districts?regency=${this.selectedRegency}`);
+                    this.districts = response.data;
+                    this.districts.unshift({ id: null, name: 'All/Semua' });
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                this.districts = [];
+            }
+        },
+        // async filterData() {
+        //     // Implement the filter logic here
+        //     console.log('Filter clicked', this.selectedRegency, this.selectedDistrict);
+        // },
+        onRegencyChange(regencyId) {
+            const regency = this.regencies.find(reg => reg.id === regencyId);
+            this.districts = regency ? regency.districts : [];
+            this.districts.unshift({ id: null, name: 'All/Semua' });
+            this.district = null; // Reset the selected district
         }
     },
     async created() {
-
+        await this.filterData();
+        await this.loadRegencies();
     }
 }
 </script>

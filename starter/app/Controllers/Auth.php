@@ -199,4 +199,19 @@ class Auth extends BaseController
         return createResponse($this->message, $this->data, $this->statusCode);
     }
 
+    public function getRelawanStatistic()
+    {
+        $registerModel = new PersonModel($this->request);
+        $users = $this->userService->getRelawanStatistic($registerModel);
+        if (empty($users)) {
+            $this->message = "Data tidak ditemukan";
+        } else {
+            $this->statusCode = ResponseInterface::HTTP_OK;
+            $this->message = "Data berhasil ditemukan";
+            $this->data = $users;
+        }
+
+        return createResponse($this->message, $this->data, $this->statusCode);
+    }
+
 }
