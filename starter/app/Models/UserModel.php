@@ -145,6 +145,7 @@ class UserModel extends Model
     public function getStatistic($payload)
     {
         $payload = [
+            empty($payload->getVolunteerID()) ? null : $payload->getVolunteerID(),
             empty($payload->getVolunteerName()) ? null : $payload->getVolunteerName(),
             empty($payload->getVolunteersDistrictID()) ? null : $payload->getVolunteersDistrictID(),
             empty($payload->getVolunteersRegencyID()) ? null : $payload->getVolunteersRegencyID(),
