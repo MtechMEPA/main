@@ -117,8 +117,8 @@ export default {
                 const userDetailsParam = {};
                 const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
                 const users = userDetailsRes.data.data;
-                var userDetails = users.filter(volunteer => volunteer.volunteerID === this.nomorAnggota);
-
+                var userDetails = users.filter(volunteer => volunteer.volunteerID === this.nomorAnggota.toString().toUpperCase().replace(/\s+/g, ''));
+                console.log(userDetails);
                 await this.$store.dispatch('setUserData', { users });
                 await this.$store.dispatch('setUserLogin', { userLogin: userDetails[0] });
 
