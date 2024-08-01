@@ -12,7 +12,7 @@
                         <v-list-item-content>
                             <v-list-item-title class="text-h5">
                                 Pemilih
-                                <v-btn to="/relawan" color="cyan" small text>Lihat</v-btn>
+                                <v-btn to="/pemilih" color="cyan" small text>Lihat</v-btn>
                             </v-list-item-title>
                             <v-list-item-subtitle>Total data Pemilih Terverifikasi</v-list-item-subtitle>
                         </v-list-item-content>
@@ -34,7 +34,7 @@
                         <v-list-item-content>
                             <v-list-item-title class="text-h5">
                                 Pemilih
-                                <v-btn to="/pemilih" color="cyan" small text>Lihat</v-btn>
+                                <!-- <v-btn to="/pemilih" color="cyan" small text>Lihat</v-btn> -->
                             </v-list-item-title>
                             <v-list-item-subtitle>Total data Pemilih Belum Terverifikasi</v-list-item-subtitle>
                         </v-list-item-content>
@@ -117,7 +117,7 @@ export default {
                 this.isLoading = true;
 
                 var param = {
-                    volunteerID: null,
+                    volunteerID: this.username,
                     volunteerName: null,
                     volunteersDistrictID: this.selectedDistrict,
                     volunteersRegencyID: this.selectedRegency,
