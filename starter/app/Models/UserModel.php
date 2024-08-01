@@ -151,7 +151,7 @@ class UserModel extends Model
             empty($payload->getVolunteersRegencyID()) ? null : $payload->getVolunteersRegencyID(),
         ];
 
-        $query = $this->db->query("CALL GetStatistics(?,?,?)", $payload);
+        $query = $this->db->query("CALL GetStatistics(?,?,?,?)", $payload);
         $result = $query->getResult();
         return $result;
     }
