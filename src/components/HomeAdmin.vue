@@ -37,7 +37,7 @@
                     </v-list-item>
                     <v-card-text>
                         <v-row align="center">
-                            <v-col class="text-h2" cols="8">{{ listCountData.totalInbox }}</v-col>
+                            <v-col class="text-h2" cols="8">{{ listCountData.totalRelawanActive }}</v-col>
                             <v-col cols="4">
                                 <v-icon class="text-h2 text--disabled">mdi-email-outline</v-icon>
                             </v-col>
@@ -59,7 +59,7 @@
                     </v-list-item>
                     <v-card-text>
                         <v-row align="center">
-                            <v-col class="text-h2" cols="8">{{ listCountData.totalOutbox }}</v-col>
+                            <v-col class="text-h2" cols="8">{{ listCountData.totalPemilihActive }}</v-col>
                             <v-col cols="4">
                                 <v-icon class="text-h2 text--disabled">mdi-email-fast-outline</v-icon>
                             </v-col>
@@ -78,7 +78,7 @@
                     </v-list-item>
                     <v-card-text>
                         <v-row align="center">
-                            <v-col class="text-h2" cols="8">{{ listCountData.totalNadine }}</v-col>
+                            <v-col class="text-h2" cols="8">{{ listCountData.totalActive }}</v-col>
                             <v-col cols="4">
                                 <v-icon class="text-h2 text--disabled">mdi-database-check-outline</v-icon>
                             </v-col>
@@ -86,10 +86,26 @@
                     </v-card-text>
                 </v-card>
             </v-col>
+
+            <!-- Tabel untuk menampilkan data volunteer -->
+            <v-col cols="12" class="mb-4">
+                <v-data-table :headers="headers" :items="volunteers" class="elevation-1" disable-pagination>
+                    <template v-slot:top>
+                        <v-toolbar flat>
+                            <v-toolbar-title>Data Relawan</v-toolbar-title>
+                        </v-toolbar>
+                    </template>
+                    <template v-slot:item.status="{ item }">
+                        <v-chip :color="item.status === 'active' ? 'green' : 'red'" dark>{{ item.status }}</v-chip>
+                    </template>
+                    <template v-slot:item.index="{ index }">
+                        {{ index + 1 }}
+                    </template>
+                </v-data-table>
+            </v-col>
         </v-row>
     </v-container>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -104,16 +120,24 @@ export default {
         return {
             color: "grey darken-2",
             listCountData: {
-                totalInbox: 0,
-                totalOutbox: 0,
-                totalNadine: 0,
+                totalRelawanActive: 0,
+                totalPemilihActive: 0,
+                totalActive: 0,
             },
             newRegencies: [], // Array for regency list
             districts: [], // Array for district list
             selectedRegency: null,
             selectedDistrict: null,
             isLoading: false,
-            // isOverlayLoading: false,
+            volunteers: [], // Array to store volunteer data
+            headers: [
+                { text: 'Nomor Anggota', value: 'volunteerID' },
+                { text: 'Nama', value: 'name' },
+                { text: 'Nama Relawan', value: 'volunteerName' },
+                { text: 'Total Pemilih', value: 'totalPemilih' },
+                { text: 'Total Aktif', value: 'totalActive' },
+                { text: 'Total Tidak Aktif', value: 'totalInactive' },
+            ],
         }
     },
     methods: {
@@ -131,7 +155,6 @@ export default {
             this.showOverlayLoading();
 
             try {
-
                 this.isLoading = true;
 
                 var param = {
@@ -143,11 +166,13 @@ export default {
                 const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/statistic", param);
                 const listData = userDetailsRes.data.data[0];
                 if (listData) {
-                    this.listCountData.totalInbox = listData.totalRelawanActive;
-                    this.listCountData.totalOutbox = listData.totalPemilihActive;
-                    this.listCountData.totalNadine = listData.totalActive;
+                    this.listCountData.totalRelawanActive = listData.totalRelawanActive;
+                    this.listCountData.totalPemilihActive = listData.totalPemilihActive;
+                    this.listCountData.totalActive = listData.totalActive;
                     console.log(this.listCountData);
                 }
+
+
             } catch (error) {
                 console.log(error);
             } finally {
@@ -157,8 +182,7 @@ export default {
         },
         async loadRegencies() {
             try {
-
-                this.newRegencies = this.regencies;;
+                this.newRegencies = this.regencies;
                 this.newRegencies.unshift({ id: null, name: 'All/Semua' });
             } catch (error) {
                 console.log(error);
@@ -177,10 +201,17 @@ export default {
                 this.districts = [];
             }
         },
-        // async filterData() {
-        //     // Implement the filter logic here
-        //     console.log('Filter clicked', this.selectedRegency, this.selectedDistrict);
-        // },
+        async getVolunteers() {
+            this.showOverlayLoading();
+            try {
+                const relawanData = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/relawan/statistic", {});
+                this.volunteers = relawanData.data.data;
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.hideOverlayLoading();
+            }
+        },
         onRegencyChange(regencyId) {
             const regency = this.regencies.find(reg => reg.id === regencyId);
             this.districts = regency ? regency.districts : [];
@@ -190,11 +221,13 @@ export default {
     },
     async created() {
         await this.filterData();
+        await this.getVolunteers(); // Fetch volunteer data on created
+    },
+    async mounted() {
         await this.loadRegencies();
     }
 }
 </script>
-
 <style scoped>
 .intro-text {
     font-size: 40px;
