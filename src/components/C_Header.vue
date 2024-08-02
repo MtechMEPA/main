@@ -6,10 +6,10 @@
                 <v-row>
                     <v-img alt="Vuetify Name" class="col-sm-12 col-md-6 col-lg-12" contain src="../assets/logomepa.png"
                         max-width="20%" />
-                          <span class="mx-5">Hi, {{ userLogin.name }}</span>
+                    <span class="mx-5">Hi, {{ userLogin.name }}</span>
                     <v-spacer></v-spacer>
                     <div class="text-center d-flex align-center justify-space-around pr-10">
-                      
+
 
                         <v-btn text
                             :to="userLogin.role == 'admin' ? '/profile-admin' : userLogin.role == 'pemilih' ? '/profile-pemilih' : '/profile-relawan'"
@@ -30,15 +30,15 @@
                         </v-btn>
                     </div>
                     <v-col class="text-right col-md-12 col-sm-12">
-                    <v-btn :small="styleData.small" v-for="link in renderMenu" :active-class="('cyan--text')"
-                        :key="link.name" :to="link.path" text class="my-4" :outlined="link.outlined"
-                        v-show="link.isShow">
+                        <v-btn :small="styleData.small" v-for="link in renderMenu" :active-class="('cyan--text')"
+                            :key="link.name" :to="link.path" text class="my-4" :outlined="link.outlined"
+                            v-show="link.isShow">
 
-                        <span>
-                            {{ link.name }}
-                        </span>
-                    </v-btn>
-                </v-col>
+                            <span>
+                                {{ link.name }}
+                            </span>
+                        </v-btn>
+                    </v-col>
 
 
 
@@ -141,7 +141,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['isLoggedIn', 'settings', 'username', 'userLogin']),
+        ...mapGetters(['isLoggedIn', 'settings', 'username', 'userLogin', 'isOverlayLoading']),
         switchLabel() {
             return this.darkMode ? 'light' : 'dark';
         },
