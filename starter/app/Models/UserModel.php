@@ -135,9 +135,10 @@ class UserModel extends Model
             empty($payload->getVolunteersDistrictID()) ? null : $payload->getVolunteersDistrictID(),
             empty($payload->getVolunteerName()) ? null : $payload->getVolunteerName(),
             empty($payload->getStatus()) ? null : $payload->getStatus(),
+            empty($payload->getRole()) ? null : $payload->getRole(),
         ];
 
-        $query = $this->db->query("CALL GetUserByID(?,?,?,?,?,?,?)", $payload);
+        $query = $this->db->query("CALL GetUserByID(?,?,?,?,?,?,?,?)", $payload);
         $result = $query->getResult();
         return $result;
     }
