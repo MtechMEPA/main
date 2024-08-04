@@ -89,7 +89,8 @@
                         v-show="link.isShow">
 
                         <span>
-                            {{ link.name }}
+                            {{ link.name }} <v-icon
+                                        class="text--disabled">{{link.icon}}</v-icon>
                         </span>
                     </v-btn>
                 </v-col>
@@ -156,38 +157,38 @@ export default {
                 {
                     name: "Home",
                     path: "/",
-                    icon: "mdi-home-roof",
+                    icon: "mdi-home-outline",
                     isShow: ((level == "relawan" || level == 'pemilih' || level == 'admin') ? true : false)
                 },
                 {
                     name: "Lengkapi Data Pemilih",
                     path: "/completion-pemilih",
-                    icon: "mdi-phone",
+                    icon: "mdi-account-outline",
                     isShow: (level == 'pemilih' && status == 'inactive') ? true : false
                 },
                 {
                     name: "Lengkapi Data Relawan",
                     path: "/completion-relawan",
-                    icon: "mdi-phone",
+                    icon: "mdi-account-multiple-outline",
                     isShow: (level == 'relawan' && status == 'inactive') ? true : false
                 },
                 {
                     name: "Relawan",
                     path: "/relawan",
-                    icon: "mdi-phone",
+                    icon: "mdi-account-multiple-outline",
                     isShow: (level == 'admin' && status == 'active') ? true : false
                 },
                 {
                     name: "Pemilih",
                     path: "/pemilih",
-                    icon: "mdi-phone",
+                    icon: "mdi-account-outline",
                     isShow: (level == 'relawan' || level == 'admin' && status == 'active') ? true : false
                 },
 
                 {
                     name: "Report",
                     path: "/report",
-                    icon: "mdi-phone",
+                    icon: "mdi-file-document",
                     isShow: (level == 'admin' ? true : false)
                 },
             ];
