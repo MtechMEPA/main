@@ -2,107 +2,70 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" class="text--disabled text-center mb-4">
-                <h1 class="font-weight-medium">Selamat datang di Meki Nawipa - MEPA</h1>
-                <span class="description d-block" :color="color">Anda masuk sebagai Relawan</span>
+                <h1 class="font-weight-medium">Selamat datang di Aplikasi Relawan Meki Nawipa - MEPA</h1>
+                <span class="description d-block" :color="color">Anda masuk sebagai <strong>Relawan</strong></span>
             </v-col>
 
-            <v-col cols="12" class="mb-4">
-                <v-card>
-                    <v-row class="py-2 px-2">
-                        <v-col class="col-md-5 col-sm-5">
-                            <v-select v-model="selectedRegency" :items="newRegencies" label="Kabupaten/Kota"
-                                item-text="name" item-value="id" @change="onRegencyChange" outlined dense></v-select>
-                        </v-col>
-                        <v-col class="col-md-5 col-sm-5">
-                            <v-select v-model="selectedDistrict" :items="districts" label="Kecamatan" item-text="name"
-                                item-value="id" outlined dense></v-select>
-                        </v-col>
-                        <v-col class="col-md-2 col-sm-2">
-                            <v-btn color="cyan darken-2" @click="filterData" class="white--text">Filter</v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </v-col>
 
-            <v-col cols="12" md="4" class="mb-4">
-                <v-card class="mx-auto">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                Relawan
-                                <v-btn to="/relawan" color="cyan" small text>Lihat</v-btn>
-                            </v-list-item-title>
-                            <v-list-item-subtitle>Total data Relawan Terverifikasi</v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-card-text>
-                        <v-row align="center">
-                            <v-col class="text-h2" cols="8">{{ listCountData.totalRelawanActive }}</v-col>
-                            <v-col cols="4">
-                                <v-icon class="text-h2 text--disabled">mdi-email-outline</v-icon>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-col>
 
-            <v-col cols="12" md="4" class="mb-4">
-                <v-card class="mx-auto">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                Pemilih
-                                <v-btn to="/pemilih" color="cyan" small text>Lihat</v-btn>
-                            </v-list-item-title>
-                            <v-list-item-subtitle>Total data Pemilih Terverifikasi</v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-card-text>
-                        <v-row align="center">
-                            <v-col class="text-h2" cols="8">{{ listCountData.totalPemilihActive }}</v-col>
-                            <v-col cols="4">
-                                <v-icon class="text-h2 text--disabled">mdi-email-fast-outline</v-icon>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-col>
+            <!-- Summary Cards -->
+            <div class="text--disabled text-center mb-4">
+                <h2 class="font-weight-medium">Data Pemilih yang telah anda himpun</h2>
+            </div>
+            <v-row>
 
-            <v-col cols="12" md="4" class="mb-4">
-                <v-card class="mx-auto">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">Total</v-list-item-title>
-                            <v-list-item-subtitle>Total keseluruhan data</v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-card-text>
-                        <v-row align="center">
-                            <v-col class="text-h2" cols="8">{{ listCountData.totalActive }}</v-col>
-                            <v-col cols="4">
-                                <v-icon class="text-h2 text--disabled">mdi-database-check-outline</v-icon>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-col>
+                <!-- Relawan Card -->
+                <v-col cols="12" md="4" class="mb-4">
+                    <v-card class="mx-auto">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">Aktif <v-icon
+                                        class="text-h4 text--disabled">mdi-account-check-outline</v-icon></v-list-item-title>
+                                <v-list-item-subtitle>Total data Pemilih yang sudah anda
+                                    verifikasi</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-card-text>
+                            <span class="text-h2">{{ listCountData.totalActive }}</span>
 
-            <!-- Tabel untuk menampilkan data volunteer -->
-            <v-col cols="12" class="mb-4">
-                <v-data-table :headers="headers" :items="volunteers" class="elevation-1" disable-pagination>
-                    <template v-slot:top>
-                        <v-toolbar flat>
-                            <v-toolbar-title>Data Relawan</v-toolbar-title>
-                        </v-toolbar>
-                    </template>
-                    <template v-slot:item.status="{ item }">
-                        <v-chip :color="item.status === 'active' ? 'green' : 'red'" dark>{{ item.status }}</v-chip>
-                    </template>
-                    <template v-slot:item.index="{ index }">
-                        {{ index + 1 }}
-                    </template>
-                </v-data-table>
-            </v-col>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+
+                <!-- Pemilih Card -->
+                <v-col cols="12" md="4" class="mb-4">
+                    <v-card class="mx-auto">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">Belum Aktif <v-icon
+                                        class="text-h4 text--disabled">mdi-account-outline</v-icon></v-list-item-title>
+                                <v-list-item-subtitle>Total data Pemilih yang belum anda
+                                    verifikasi</v-list-item-subtitle>
+
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-card-text>
+                            <span class="text-h2">{{ listCountData.totalInactive }}</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+
+                <!-- Total Card -->
+                <v-col cols="12" md="4" class="mb-4">
+                    <v-card class="mx-auto">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">Total Keseluruhan <v-icon
+                                        class="text-h4 text--disabled">mdi-database-check-outline</v-icon></v-list-item-title>
+                                <v-list-item-subtitle>Total keseluruhan data yang anda himpun</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-card-text>
+                            <span class="text-h2">{{ listCountData.totalPemilih }}</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
         </v-row>
     </v-container>
 </template>
@@ -120,9 +83,9 @@ export default {
         return {
             color: "grey darken-2",
             listCountData: {
-                totalRelawanActive: 0,
-                totalPemilihActive: 0,
                 totalActive: 0,
+                totalInactive: 0,
+                totalPemilih: 0
             },
             newRegencies: [], // Array for regency list
             districts: [], // Array for district list
@@ -130,7 +93,11 @@ export default {
             selectedDistrict: null,
             isLoading: false,
             volunteers: [], // Array to store volunteer data
+            headerprops: {
+                "sort-icon": "mdi-arrow-up"
+            },
             headers: [
+                { text: 'No', value: 'num' },
                 { text: 'Nomor Anggota', value: 'volunteerID' },
                 { text: 'Nama', value: 'name' },
                 { text: 'Nama Relawan', value: 'volunteerName' },
@@ -163,15 +130,14 @@ export default {
                     volunteersRegencyID: this.selectedRegency,
                 };
 
-                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/statistic", param);
-                const listData = userDetailsRes.data.data[0];
-                if (listData) {
-                    this.listCountData.totalRelawanActive = listData.totalRelawanActive;
-                    this.listCountData.totalPemilihActive = listData.totalPemilihActive;
-                    this.listCountData.totalActive = listData.totalActive;
-                    console.log(this.listCountData);
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/relawan/statistic", {});
+                if (userDetailsRes.data.data) {
+                    console.log(this.username);
+                    var filterData = userDetailsRes.data.data.filter(val => val.volunteerID == this.username.toUpperCase())[0];
+                    this.listCountData.totalActive = filterData.totalActive;
+                    this.listCountData.totalInactive = filterData.totalInactive;
+                    this.listCountData.totalPemilih = filterData.totalPemilih;
                 }
-
 
             } catch (error) {
                 console.log(error);
@@ -205,7 +171,11 @@ export default {
             this.showOverlayLoading();
             try {
                 const relawanData = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/relawan/statistic", {});
-                this.volunteers = relawanData.data.data;
+
+                if (relawanData.data && relawanData.data.data) {
+                    this.volunteers = relawanData.data.data.filter(val => val.volunteerID == this.username);
+                }
+                console.log(this.volunteers);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -221,7 +191,7 @@ export default {
     },
     async created() {
         await this.filterData();
-        await this.getVolunteers(); // Fetch volunteer data on created
+        // await this.getVolunteers(); // Fetch volunteer data on created
     },
     async mounted() {
         await this.loadRegencies();
