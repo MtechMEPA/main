@@ -36,27 +36,26 @@
                         <v-list-item two-line>
                             <v-list-item-content>
                                 <v-list-item-title class="text-h5">Relawan <v-icon
-                                        class="text-h4 text--disabled">mdi-account-check-outline</v-icon></v-list-item-title>
+                                        class="text-h4 text--disabled">mdi-account-multiple-outline</v-icon></v-list-item-title>
                                 <v-list-item-subtitle>Total data Relawan</v-list-item-subtitle>
                             </v-list-item-content>
                         </v-list-item>
                         <v-card-text>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-row class="mb-2">
-                                        <v-col> Aktif:
-                                            <v-chip color="cyan" class="ma-1">
-                                                {{ listCountData.totalRelawanActive }}
-                                            </v-chip>
-                                        </v-col>
-                                        <v-col> Belum Aktif:
-                                            <v-chip color="orange" class="ma-1">
-                                                {{ listCountData.totalRelawanInactive }}
-                                            </v-chip>
-                                        </v-col>
-                                    </v-row>
-                                </v-col>
-                            </v-row>
+
+                            <div> Terverifikasi:
+                                <v-chip color="green" dark class="ma-1">
+                                    {{ listCountData.totalRelawanActive }}
+                                    <v-icon class="ml-2">mdi-check-circle-outline</v-icon>
+                                </v-chip>
+                            </div>
+                            <div>
+                                Belum Aktif:
+                                <v-chip color="orange" class="ma-1">
+                                    {{ listCountData.totalRelawanInactive }}
+                                </v-chip>
+                            </div>
+
+
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -72,22 +71,18 @@
                             </v-list-item-content>
                         </v-list-item>
                         <v-card-text>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-row class="mb-2">
-                                        <v-col> Aktif:
-                                            <v-chip color="cyan" class="ma-1">
-                                                {{ listCountData.totalPemilihActive }}
-                                            </v-chip>
-                                        </v-col>
-                                        <v-col> Belum Aktif:
-                                            <v-chip color="orange" class="ma-1">
-                                                {{ listCountData.totalPemilihInactive }}
-                                            </v-chip>
-                                        </v-col>
-                                    </v-row>
-                                </v-col>
-                            </v-row>
+                            <div> Terverifikasi:
+                                <v-chip color="green" dark class="ma-1">
+                                    {{ listCountData.totalPemilihActive }}
+                                    <v-icon class="ml-2">mdi-check-circle-outline</v-icon>
+                                </v-chip>
+                            </div>
+                            <div>
+                                Belum Aktif:
+                                <v-chip color="orange" class="ma-1">
+                                    {{ listCountData.totalPemilihInactive }}
+                                </v-chip>
+                            </div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -97,49 +92,25 @@
                     <v-card class="mx-auto">
                         <v-list-item two-line>
                             <v-list-item-content>
-                                <v-list-item-title class="text-h5">Total Relawan+Pemilih <v-icon
-                                        class="text-h4 text--disabled">mdi-database-check-outline</v-icon></v-list-item-title>
-                                <v-list-item-subtitle>Total Relawan+Pemilih Aktif dan tidak</v-list-item-subtitle>
+                                <v-list-item-title class="text-h5">Total Keseluruhan<v-icon
+                                        class="text-h4 text--disabled">mdi-account-outline</v-icon></v-list-item-title>
+                                <v-list-item-subtitle>Total keseluruhan data Relawan &
+                                    Pemilih</v-list-item-subtitle>
                             </v-list-item-content>
                         </v-list-item>
                         <v-card-text>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-row class="mb-2">
-                                        <v-col> Data Data Belum Terverifikasi semua
-                                            <v-chip color="green" class="ma-1">
-                                                {{ listCountData.totalAll }}
-                                            </v-chip>
-                                        </v-col>
-
-                                    </v-row>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-                <v-col cols="12" md="12" class="mb-4">
-                    <v-card class="mx-auto">
-                        <v-list-item two-line>
-                            <v-list-item-content>
-                                <v-list-item-title class="text-h5">Total Keseluruhan <v-icon
-                                        class="text-h4 text--disabled">mdi-database-check-outline</v-icon></v-list-item-title>
-                                <v-list-item-subtitle>Total keseluruhan data dari semua Relawan</v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-card-text>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-row class="mb-2">
-                                        <v-col> Data Terverifikasi
-                                            <v-chip color="green" class="ma-1">
-                                                {{ listCountData.totalActive }}
-                                            </v-chip>
-                                        </v-col>
-
-                                    </v-row>
-                                </v-col>
-                            </v-row>
+                            <div> Terverifikasi:
+                                <v-chip color="green" dark class="ma-1">
+                                    {{ listCountData.totalActive }}
+                                    <v-icon class="ml-2">mdi-check-circle-outline</v-icon>
+                                </v-chip>
+                            </div>
+                            <div>
+                                Belum Aktif:
+                                <v-chip color="orange" class="ma-1">
+                                    {{ listCountData.totalInactive }}
+                                </v-chip>
+                            </div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -152,7 +123,7 @@
                         <v-toolbar flat>
                             <v-toolbar-title>Pencapaian Relawan</v-toolbar-title>
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" label="Cari" append-icon="mdi-magnify" class="mx-4"
+                            <v-text-field v-model="search" label="Pencarian" append-icon="mdi-magnify" class="mx-4"
                                 hide-details></v-text-field>
                         </v-toolbar>
                     </v-card-title>
@@ -164,19 +135,22 @@
                         <template v-slot:item.num="{ index }">
                             {{ index + 1 }}
                         </template>
-                        <template v-slot:item.totalPemilih="{ item }">
-                            <v-chip :color="item.totalPemilih > 0 ? 'cyan' : ''">
-                                {{ item.totalPemilih }}
-                            </v-chip>
-                        </template>
+
                         <template v-slot:item.totalActive="{ item }">
-                            <v-chip :color="item.totalActive > 0 ? 'green' : ''">
+                            <v-chip :dark="item.totalActive > 0 ? true : false"
+                                :color="item.totalActive > 0 ? 'green' : ''">
                                 {{ item.totalActive }}
+                                <v-icon class="ml-2" v-if="item.totalActive > 0">mdi-check-circle-outline</v-icon>
                             </v-chip>
                         </template>
                         <template v-slot:item.totalInactive="{ item }">
-                            <v-chip :color="item.totalInactive > 0 ? 'orange' : ''">
+                            <v-chip>
                                 {{ item.totalInactive }}
+                            </v-chip>
+                        </template>
+                        <template v-slot:item.totalPemilih="{ item }">
+                            <v-chip>
+                                {{ item.totalPemilih }}
                             </v-chip>
                         </template>
 
@@ -184,9 +158,9 @@
                         <template v-slot:body.append>
                             <tr>
                                 <td class="text-right" colspan="4"><strong>Total:</strong></td>
-                                <td class="text-left"><strong>{{ totalPemilih }}</strong></td>
                                 <td class="text-left"><strong>{{ totalActive }}</strong></td>
                                 <td class="text-left"><strong>{{ totalInactive }}</strong></td>
+                                <td class="text-left"><strong>{{ totalPemilih }}</strong></td>
                             </tr>
                         </template>
                     </v-data-table>
@@ -232,7 +206,8 @@ export default {
                 totalActive: 0,
                 totalRelawanInactive: 0,
                 totalPemilihInactive: 0,
-                totalAll: 0
+                totalAll: 0,
+                totalInactive: 0
             },
             newRegencies: [], // Array for regency list
             districts: [], // Array for district list
@@ -249,9 +224,9 @@ export default {
                 { text: 'Nomor Anggota', value: 'volunteerID' },
                 { text: 'Nama', value: 'name' },
                 { text: 'Nama Relawan', value: 'volunteerName' },
-                { text: 'Total Pemilih', value: 'totalPemilih' },
-                { text: 'Total Aktif', value: 'totalActive' },
-                { text: 'Total Belum Aktif', value: 'totalInactive' },
+                { text: 'Terverifikasi', value: 'totalActive' },
+                { text: 'Belum Aktif', value: 'totalInactive' },
+                { text: 'Pemilih', value: 'totalPemilih' },
             ],
         }
     },
@@ -286,11 +261,14 @@ export default {
                     this.listCountData.totalActive = listData.totalActive;
                     this.listCountData.totalPemilihInactive = listData.totalPemilihInactive;
                     this.listCountData.totalRelawanInactive = listData.totalRelawanInactive;
+                    this.listCountData.totalInactive = listData.totalInactive;
                     this.listCountData.totalAll = (
                         Number(listData.totalRelawanActive) + Number(listData.totalRelawanInactive)
                     ) + (
                             Number(listData.totalPemilihActive) + Number(listData.totalPemilihInactive)
                         );
+
+
 
                 }
 

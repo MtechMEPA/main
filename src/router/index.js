@@ -11,6 +11,7 @@ import ProfileRelawan from '../views/ProfileRelawan.vue'
 import ProfileAdmin from '../views/ProfileAdmin.vue'
 import Logout from '../views/Logout.vue'
 import Notfound from '../views/Notfound.vue'
+import Relawan from '../views/Relawan.vue'
 import store from '../store'; // Import store
 import { isTokenExpired } from '@/auth/tokenValidate'; // Import fungsi utilitas
 
@@ -72,6 +73,12 @@ const routes = [
     path: '/profile-admin',
     name: 'Profile',
     component: ProfileAdmin,
+    meta: { requiresAuth: true, roles: ['admin'], status:'active' }
+  },
+  {
+    path: '/relawan',
+    name: 'Relawan',
+    component: Relawan,
     meta: { requiresAuth: true, roles: ['admin'], status:'active' }
   },
   {
