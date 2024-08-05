@@ -96,7 +96,7 @@ export default {
                 { text: 'Kabupaten', value: 'regencyName' },
                 { text: 'Kecamatan', value: 'districtName' },
                 { text: 'KTP/SIM', value: 'attachmentName' },
-                { text: 'Status', value: 'statusName' },
+                { text: 'Verifikasi', value: 'statusName' },
             ],
         }
     },
