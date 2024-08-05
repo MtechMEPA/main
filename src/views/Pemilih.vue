@@ -6,7 +6,7 @@
                 <v-card>
                     <v-card-title>
                         <v-toolbar flat>
-                            <v-toolbar-title>Data Relawan <v-icon
+                            <v-toolbar-title>Data Pemilih <v-icon
                                     class="text-h4 text--disabled">mdi-account-multiple-outline</v-icon></v-toolbar-title>
                             <v-spacer></v-spacer>
                             <v-text-field v-model="search" label="Pencarian" append-icon="mdi-magnify" class="mx-4"
@@ -30,9 +30,17 @@
                         <template v-slot:item.statusName="{ item }">
                             <v-chip dark :color="item.statusName == 'Sudah' ? 'green' : 'orange'">
                                 {{ item.statusName }}
-                                <v-icon class="ml-2"
-                                    v-if="item.statusName == 'Sudah'">mdi-check-circle-outline</v-icon>
+                                <v-icon class="ml-2" v-if="item.statusName == 'Sudah'">mdi-check-circle-outline</v-icon>
                             </v-chip>
+                        </template>
+
+                        <template v-slot:item.attachmentName="{ item }">
+                            <v-icon color="green" v-if="item.attachmentName != ''">mdi-check-circle-outline</v-icon>
+                            <v-icon color="grey" v-else>mdi-close-circle-outline</v-icon>
+
+
+
+
                         </template>
 
                     </v-data-table>
@@ -85,7 +93,9 @@ export default {
                 { text: 'No', value: 'num' },
                 { text: 'Nomor Anggota', value: 'volunteerID' },
                 { text: 'Nama', value: 'name' },
-                { text: 'Nama Relawan', value: 'volunteerName' },
+                { text: 'Kabupaten', value: 'regencyName' },
+                { text: 'Kecamatan', value: 'districtName' },
+                { text: 'KTP/SIM', value: 'attachmentName' },
                 { text: 'Status', value: 'statusName' },
             ],
         }
@@ -108,9 +118,14 @@ export default {
             this.showOverlayLoading();
             try {
                 // Jika login berhasil, panggil API search/user
-                const userDetailsParam = { "role": 'relawan' };
+                const userDetailsParam = { "role": 'pemilih' };
                 const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
                 this.volunteers = userDetailsRes.data.data;
+                if (this.userLogin.role == 'relawan') {
+                    this.volunteers = userDetailsRes.data.data.filter(value => value.parent == this.username.toUpperCase());
+
+                }
+                console.log(this.userLogin);
             } catch (error) {
                 console.log(error);
             } finally {
