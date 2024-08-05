@@ -30,8 +30,7 @@
                         <template v-slot:item.statusName="{ item }">
                             <v-chip dark :color="item.statusName == 'Sudah' ? 'green' : 'orange'">
                                 {{ item.statusName }}
-                                <v-icon class="ml-2"
-                                    v-if="item.statusName == 'Sudah'">mdi-check-circle-outline</v-icon>
+                                <v-icon class="ml-2" v-if="item.statusName == 'Sudah'">mdi-check-circle-outline</v-icon>
                             </v-chip>
                         </template>
 
@@ -86,7 +85,7 @@ export default {
                 { text: 'Nomor Anggota', value: 'volunteerID' },
                 { text: 'Nama', value: 'name' },
                 { text: 'Nama Relawan', value: 'volunteerName' },
-                { text: 'Status', value: 'statusName' },
+                { text: 'Verifikasi', value: 'statusName' },
             ],
         }
     },
