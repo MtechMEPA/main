@@ -12,6 +12,8 @@ import ProfileAdmin from '../views/ProfileAdmin.vue'
 import Logout from '../views/Logout.vue'
 import Notfound from '../views/Notfound.vue'
 import Relawan from '../views/Relawan.vue'
+import Pemilih from '../views/Pemilih.vue'
+
 import store from '../store'; // Import store
 import { isTokenExpired } from '@/auth/tokenValidate'; // Import fungsi utilitas
 
@@ -80,6 +82,12 @@ const routes = [
     name: 'Relawan',
     component: Relawan,
     meta: { requiresAuth: true, roles: ['admin'], status:'active' }
+  },
+  {
+    path: '/pemilih',
+    name: 'Pemilih',
+    component: Pemilih,
+    meta: { requiresAuth: true, roles: ['relawan','admin'], status:'active' }
   },
   {
     path: "/:catchAll(.*)",
