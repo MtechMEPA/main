@@ -1,0 +1,12 @@
+.custom-data-table .v-data-table__checkbox .v-simple-checkbox {
+    border-color: #000 !important; /* Mengatur warna border checkbox */
+    background-color: #fff !important; /* Mengatur warna latar belakang checkbox */
+}
+
+.custom-data-table .v-data-table__checkbox .v-simple-checkbox .v-icon {
+    color: #f8baba !important; /* Mengatur warna icon checkbox */
+}
+
+.custom-data-table .v-input--selection-controls__ripple {
+    background-color: rgba(51, 51, 51, 0.651) !important; /* Mengatur warna efek ripple */
+}

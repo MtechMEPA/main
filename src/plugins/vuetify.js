@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
-import colors from 'vuetify/lib/util/colors'
+import colors from 'vuetify/lib/util/colors';
+import '../styles/main.css'; // Pastikan file CSS global diimpor di sini
+
 
 
 Vue.use(Vuetify);

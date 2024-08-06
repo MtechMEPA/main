@@ -8,6 +8,8 @@ import vuetify from './plugins/vuetify';
 import httpClientAxios from './auth/http-common';
 import VuePapaParse from 'vue-papa-parse';
 import mixins from 'vuetify-multiple-draggable-dialogs';
+import VuetifyLib from 'vuetify/lib';
+import 'vuetify/dist/vuetify.min.css';
  
 import {
   hmrDirtyComponents
@@ -21,6 +23,7 @@ new Vue({
   router,
   store,
   vuetify,
+  VuetifyLib,
   httpClientAxios,
   AxiosPlugin,
   VuePapaParse,
