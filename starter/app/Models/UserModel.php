@@ -164,4 +164,16 @@ class UserModel extends Model
         return $result;
     }
 
+    public function updateStatus($payload)
+    {
+        $payload = [
+            empty($payload->getVolunteerID()) ? null : $payload->getVolunteerID(),
+            empty($payload->getStatus()) ? null : $payload->getStatus(),
+        ];
+
+        $query = $this->db->query("CALL updateStatus(?,?)", $payload);
+        $result = $query->getRow();
+        return $result;
+    }
+
 }

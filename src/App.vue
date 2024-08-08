@@ -4,7 +4,7 @@
     <LoadingOverlay />
     <v-container>
       <C_Header v-if="isLogin" />
-      <GeneralDialogComponent />
+      <AlertComponent />
       <router-view />
     </v-container>
   </v-app>
@@ -16,7 +16,7 @@ import C_Header from '@/components/C_Header.vue';
 import Footers from '@/components/C_Footer.vue';
 import { mapGetters, mapActions } from 'vuex';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
-import GeneralDialogComponent from '@/components/GeneralDialogComponent.vue';
+import AlertComponent from '@/components/AlertComponent.vue';
 
 
 
@@ -26,7 +26,7 @@ export default {
     C_Header,
     Footers,
     LoadingOverlay,
-    GeneralDialogComponent
+    AlertComponent
   },
   data() {
     return {

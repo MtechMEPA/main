@@ -214,4 +214,25 @@ class Auth extends BaseController
         return createResponse($this->message, $this->data, $this->statusCode);
     }
 
+    public function updateStatus()
+    {
+        if (!CommonValidation::validateStatus($this->request, $this->validation)) {
+            $this->message = 'Kesalahan validasi';
+            $this->data = $this->validation->getErrors();
+        } else {
+            $registerModel = new PersonModel($this->request);
+            $response = $this->userService->updateStatus($registerModel);
+
+            if ($response->status == "1") {
+                $this->statusCode = ResponseInterface::HTTP_OK;
+                $this->message = "Data berhasil tersimpan";
+            } else {
+                $this->message = "Data gagal tersimpan";
+            }
+
+        }
+
+        return createResponse($this->message, $this->data, $this->statusCode);
+    }
+
 }

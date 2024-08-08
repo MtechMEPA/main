@@ -15,4 +15,5 @@ interface IUserRepository
     public function getUserByID(PersonModel $payload);
     public function getStatistic(PersonModel $payload);
     public function getRelawanStatistic();
+    public function updateStatus(PersonModel $payload);
 }

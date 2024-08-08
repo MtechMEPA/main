@@ -33,6 +33,10 @@ $routes->group('pemilih', ['filter' => 'jwt:pemilih,admin'], function ($routes) 
     $routes->post('completion', 'Pemilih::completionRegistration');
 });
 
+$routes->group('user', ['filter' => 'jwt:relawan,admin'], function ($routes) {
+    $routes->post('statusupdate', 'Auth::updateStatus');
+});
+
 $routes->group('attachment', ['filter' => 'jwt:relawan,pemilih,admin'], function ($routes) {
     $routes->post('upload', 'Attachment::uploadAttachment');
 });

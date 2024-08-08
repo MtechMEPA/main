@@ -1,27 +1,47 @@
 <template>
     <v-container fluid>
         <v-row>
+            <!-- Filter Section -->
+            <v-col cols="12">
+                <v-card>
+                    <v-row class="py-2 px-2">
+
+                        <v-col cols="12">
+                            <v-toolbar-title>Data Pemilih <v-icon
+                                    class="text-h4 text--disabled">mdi-account-multiple-outline</v-icon></v-toolbar-title>
+
+                        </v-col>
+                        <v-col cols="6" v-if="userLogin.role == 'admin'">
+
+                            <v-select v-model="volunteerRelawanValue" :items="volunteerRelawan" label="Pilih Relawan"
+                                item-text="name" item-value="volunteerID" outlined dense
+                                append-icon="mdi-menu-down"></v-select>
+
+
+                        </v-col>
+                        <v-col cols="6">
+
+                            <v-text-field v-model="search" label="Pencarian" outlined dense append-icon="mdi-magnify"
+                                hide-details></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+
+
             <!-- Tabel untuk menampilkan data volunteer -->
             <v-col cols="12">
                 <v-card>
-                    <v-card-title>
-                        <v-toolbar flat>
-                            <v-toolbar-title>Data Pemilih <v-icon
-                                    class="text-h4 text--disabled">mdi-account-multiple-outline</v-icon></v-toolbar-title>
-                            <v-spacer></v-spacer>
-                            <v-text-field v-model="search" label="Pencarian" append-icon="mdi-magnify" class="mx-4"
-                                hide-details></v-text-field>
-                        </v-toolbar>
-                    </v-card-title>
+
                     <v-data-table :headers="headers" :items="filteredVolunteers" multi-sort :header-props="headerprops"
                         class="elevation-1 table-style" :loading="isLoading"
                         :loading-text="isLoading ? 'Loading... Please wait' : ''" @click:row="rowClick" :footer-props="{
-                                showFirstLastPage: true,
-                                firstIcon: 'mdi-arrow-collapse-left',
-                                lastIcon: 'mdi-arrow-collapse-right',
-                                prevIcon: 'mdi-minus',
-                                nextIcon: 'mdi-plus'
-                            }">
+                            showFirstLastPage: true,
+                            firstIcon: 'mdi-arrow-collapse-left',
+                            lastIcon: 'mdi-arrow-collapse-right',
+                            prevIcon: 'mdi-minus',
+                            nextIcon: 'mdi-plus'
+                        }">
 
                         <!-- Item slots -->
                         <template v-slot:item.num="{ index }">
@@ -64,11 +84,20 @@
                             </v-alert>
                         </v-col>
                         <v-col cols="12">
-                            <small class="mr-1 mb-1">KTP/SIM</small>
-                            <v-icon color="green"
-                                v-if="selectedItem.attachmentName != ''">mdi-check-circle-outline</v-icon>
-                            <v-icon color="grey" v-else>mdi-close-circle-outline</v-icon>
-                            <v-img max-width="500" :src="imageLink"></v-img>
+                            <small class="mr-1 mb-1">KTP/SIM <v-icon color="green"
+                                    v-if="selectedItem.attachmentName != ''">mdi-check-circle-outline</v-icon></small>
+                            <a v-if="selectedItem.attachmentName != ''" :href="imageLink" target="_blank">Lihat ukuran
+                                penuh</a>
+
+
+                            <v-img class="col-12" v-if="selectedItem.attachmentName" @load="loadingImg = false"
+                                :src="imageLink" :max-width="400" width="300" alt="Example Image">
+                                <template v-slot:placeholder>
+                                    <v-row class="fill-height ma-0" align="center" justify="center">
+                                        <v-progress-circular indeterminate color="cyan darken-2"></v-progress-circular>
+                                    </v-row>
+                                </template>
+                            </v-img>
                         </v-col>
                         <v-col cols="12">
                             <h3>1. Data Diri</h3>
@@ -78,10 +107,6 @@
                             <p><strong>Alamat:</strong> {{ selectedItem.address }}</p>
                             <p><strong>Jenis Kelamin:</strong> {{ selectedItem.gender }}</p>
                             <p><strong>Tanggal Lahir:</strong> {{ selectedItem.birthDate }}</p>
-                            <p v-if="selectedItem.imageLink != ''">
-                                <strong>Gambar KTP/SIM:</strong>
-                                <img :src="selectedItem.imageLink" width="200">
-                            </p>
                         </v-col>
 
                         <!-- Kolom untuk Alamat Tinggal -->
@@ -109,9 +134,10 @@
                     <v-card-actions>
 
                         <v-btn v-if="selectedItem.status == 'inactive'" color="green" dark
-                            @click="toggleStatus('Aktif')">Aktifkan <v-icon>mdi-check-circle-outline</v-icon></v-btn>
-                        <v-btn v-if="selectedItem.status == 'active'" color="red" dark
-                            @click="toggleStatus('Tidak Aktif')">Tidak Aktif</v-btn>
+                            @click="toggleStatus('Aktif')">Aktifkan?</v-btn>
+                        <v-btn v-if="selectedItem.status == 'active'" color="orange" dark
+                            @click="toggleStatus('Tidak Aktif')">Non
+                            Aktifkan?</v-btn>
                         <v-spacer></v-spacer>
                         <v-btn text @click="dialog = false">Close </v-btn>
                     </v-card-actions>
@@ -131,6 +157,7 @@ export default {
     name: "Hero",
     data() {
         return {
+            loadingImg: true,
             color: "grey darken-2",
             listCountData: {
                 totalRelawanActive: 0,
@@ -146,6 +173,8 @@ export default {
             selectedDistrict: null,
             isLoading: false,
             volunteers: [], // Array to store volunteer data
+            volunteerRelawan: [],
+            volunteerRelawanValue: null,
             search: '',
             headerprops: {
                 "sort-icon": "mdi-arrow-up"
@@ -153,6 +182,7 @@ export default {
             headers: [
                 { text: 'No', value: 'num' },
                 { text: 'Nomor Anggota', value: 'volunteerID' },
+                { text: 'Koordinator/Relawan', value: 'parentName' },
                 { text: 'Nama', value: 'name' },
                 { text: 'Kabupaten', value: 'regencyName' },
                 { text: 'Kecamatan', value: 'districtName' },
@@ -167,26 +197,34 @@ export default {
     computed: {
         ...mapGetters(['isLoggedIn', 'username', 'userData', 'token', 'regencies', 'isOverlayLoading', 'userLogin']),
         filteredVolunteers() {
-            if (!this.search) return this.volunteers;
-            return this.volunteers.filter(volunteer => {
-                const searchLower = this.search.toLowerCase();
-                return Object.keys(volunteer).some(key =>
-                    String(volunteer[key]).toLowerCase().includes(searchLower)
+
+            let filtered = this.volunteers;
+            console.log(this.volunteerRelawanValue);
+            // Filter by volunteerRelawanValue
+            if (this.volunteerRelawanValue) {
+                filtered = filtered.filter(item => item.parent === this.volunteerRelawanValue);
+
+            }
+
+            // Filter by search term
+            if (this.search && this.search.length > 3) {
+                console.log(this.search);
+                const searchTerm = this.search.toLowerCase();
+                filtered = filtered.filter(item =>
+                    item.volunteerID.toLowerCase().includes(searchTerm) ||
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.statusName.toLowerCase().includes(searchTerm)
+                    // item.districtName ? item.districtName.toLowerCase().includes(searchTerm) : ''
                 );
-            });
+            }
+
+
+
+            return filtered;
         },
     },
     methods: {
         ...mapActions(['showOverlayLoading', 'hideOverlayLoading']),
-
-        async getData() {
-            try {
-                await axios.get(process.env.VUE_APP_SERVICE_URL + "search/statistic");
-            } catch (error) {
-                console.log(error);
-                this.isLoading = false;
-            }
-        },
         async rowClick(row) {
             const userDetailsParam = { "volunteerID": row.volunteerID };
             var listData = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
@@ -204,7 +242,19 @@ export default {
                 if (this.userLogin.role == 'relawan') {
                     this.volunteers = userDetailsRes.data.data.filter(value => value.parent == this.username.toUpperCase());
                 }
-                console.log(this.userLogin);
+            } catch (error) {
+
+            } finally {
+                this.hideOverlayLoading();
+            }
+        },
+        async getVolunteerRelawan() {
+            this.showOverlayLoading();
+            try {
+                // Jika login berhasil, panggil API search/user
+                const userDetailsParam = { "role": 'relawan' };
+                const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
+                this.volunteerRelawan = userDetailsRes.data.data;
             } catch (error) {
                 console.log(error);
             } finally {
@@ -225,8 +275,8 @@ export default {
         }
     },
     mounted() {
-        this.getData();
         this.getVolunteers();
+        this.getVolunteerRelawan();
     }
 };
 </script>
@@ -243,5 +293,15 @@ export default {
     bottom: 0;
     background-color: white;
     z-index: 1;
+}
+
+#table>.v-data-footer .v-icon {
+    color: black !important;
+}
+
+.table-style>>>tbody tr:hover {
+    cursor: pointer;
+    background: #0097A7 !important;
+    color: white;
 }
 </style>
