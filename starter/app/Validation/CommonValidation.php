@@ -27,6 +27,27 @@ class CommonValidation
             ->run();
     }
 
+    public static function validateStatus($request, ValidationInterface $validation)
+    {
+        $rules = [
+            'volunteerID' => 'required',
+            'status' => 'required',
+        ];
+
+        $messages = [
+            'volunteerID' => [
+                'required' => 'Silakan masukkan Nomor Anggota.',
+            ],
+            'status' => [
+                'required' => 'Silakan masukkan status.',
+            ],
+        ];
+
+        return $validation->setRules($rules, $messages)
+            ->withRequest($request)
+            ->run();
+    }
+
     public static function validateRegisterRequest($request, ValidationInterface $validation)
     {
         $rules = [

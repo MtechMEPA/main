@@ -1,32 +1,6 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12" class="text--disabled text-center mb-4">
-                <h1 class="font-weight-medium">Selamat datang di Aplikasi Relawan Meki Nawipa - MEPA</h1>
-                <span class="description d-block" :color="color">Anda masuk sebagai <strong>Admin</strong></span>
-            </v-col>
-
-            <!-- Filter Section -->
-            <v-row class="mb-4">
-                <v-col cols="12">
-                    <v-card>
-                        <v-row class="py-2 px-2">
-                            <v-col md="5" sm="5">
-                                <v-select v-model="selectedRegency" :items="newRegencies" label="Kabupaten/Kota"
-                                    item-text="name" item-value="id" @change="onRegencyChange" outlined
-                                    dense></v-select>
-                            </v-col>
-                            <v-col md="5" sm="5">
-                                <v-select v-model="selectedDistrict" :items="districts" label="Kecamatan"
-                                    item-text="name" item-value="id" outlined dense></v-select>
-                            </v-col>
-                            <v-col md="2" sm="2">
-                                <v-btn color="cyan darken-2" @click="filterData" class="white--text">Filter</v-btn>
-                            </v-col>
-                        </v-row>
-                    </v-card>
-                </v-col>
-            </v-row>
 
             <!-- Summary Cards -->
             <v-row>
@@ -123,8 +97,8 @@
                         <v-toolbar flat>
                             <v-toolbar-title>Pencapaian Relawan</v-toolbar-title>
                             <v-spacer></v-spacer>
-                            <v-text-field v-model="search" label="Pencarian" append-icon="mdi-magnify" class="mx-4"
-                                hide-details></v-text-field>
+                            <v-text-field v-model="search" label="Pencarian" outlined dense append-icon="mdi-magnify"
+                                class="mx-4" hide-details></v-text-field>
                         </v-toolbar>
                     </v-card-title>
                     <v-data-table :headers="headers" :items="filteredVolunteers" disable-pagination multi-sort
@@ -222,8 +196,8 @@ export default {
             headers: [
                 { text: 'No', value: 'num' },
                 { text: 'Nomor Anggota', value: 'volunteerID' },
-                { text: 'Nama', value: 'name' },
-                { text: 'Nama Relawan', value: 'volunteerName' },
+                { text: 'Nama Koordinator', value: 'name' },
+                { text: 'Relawan', value: 'volunteerName' },
                 { text: 'Terverifikasi', value: 'totalActive' },
                 { text: 'Belum Aktif', value: 'totalInactive' },
                 { text: 'Pemilih', value: 'totalPemilih' },

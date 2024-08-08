@@ -51,19 +51,6 @@
                             <p><strong>RW:</strong> {{ rw }}</p>
                         </v-col>
                     </v-row>
-
-
-                    <v-row class="mb-4">
-                        <v-col cols="12">
-                            <h3>3. Daerah Pemenangan Relawan</h3>
-                        </v-col>
-                        <v-col cols="12">
-                            <p><strong>Nama Relawan:</strong> {{ volunteerName }}</p>
-                            <p><strong>Kabupaten/Kota Pemenangan:</strong> {{ volunteersRegencyName }}</p>
-                            <p><strong>Kecamatan Pemenangan:</strong> {{ volunteersDistrictName }}</p>
-
-                        </v-col>
-                    </v-row>
                 </template>
             </v-card-text>
         </v-card>

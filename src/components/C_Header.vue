@@ -34,9 +34,7 @@
                             :key="link.name" :to="link.path" text class="my-4" :outlined="link.outlined"
                             v-show="link.isShow">
 
-                            <span>
-                                {{ link.name }}
-                            </span>
+                            <span> {{ link.name }} <v-icon class="text--disabled">{{ link.icon }}</v-icon> </span>
                         </v-btn>
                     </v-col>
 
@@ -88,10 +86,7 @@
                         :key="link.name" :to="link.path" text class="my-4" :outlined="link.outlined"
                         v-show="link.isShow">
 
-                        <span>
-                            {{ link.name }} <v-icon
-                                        class="text--disabled">{{link.icon}}</v-icon>
-                        </span>
+                        <span> {{ link.name }} <v-icon class="text--disabled">{{ link.icon }}</v-icon> </span>
                     </v-btn>
                 </v-col>
             </v-row>

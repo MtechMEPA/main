@@ -1,12 +1,6 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12" class="text--disabled text-center mb-4">
-                <h1 class="font-weight-medium">Selamat datang di Aplikasi Relawan Meki Nawipa - MEPA</h1>
-                <span class="description d-block" :color="color">Anda masuk sebagai <strong>Relawan</strong></span>
-            </v-col>
-
-
 
             <!-- Summary Cards -->
             <div class="text--disabled text-center mb-4">

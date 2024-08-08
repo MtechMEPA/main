@@ -1,27 +1,35 @@
 <template>
     <v-container fluid>
         <v-row>
-            <!-- Tabel untuk menampilkan data volunteer -->
-            <v-col cols="12">
+            <!-- Filter Section -->
+            <v-col cols="12" v-if="userLogin.role == 'admin'">
                 <v-card>
-                    <v-card-title>
-                        <v-toolbar flat>
+                    <v-row class="py-2 px-2">
+                        <v-col cols="12">
                             <v-toolbar-title>Data Relawan <v-icon
                                     class="text-h4 text--disabled">mdi-account-multiple-outline</v-icon></v-toolbar-title>
-                            <v-spacer></v-spacer>
-                            <v-text-field v-model="search" label="Pencarian" append-icon="mdi-magnify" class="mx-4"
+                        </v-col>
+                        
+                        <v-col cols="6">
+
+                            <v-text-field v-model="search" label="Pencarian" outlined dense append-icon="mdi-magnify"
                                 hide-details></v-text-field>
-                        </v-toolbar>
-                    </v-card-title>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+            <!-- Tabel untuk menampilkan data volunteer -->
+            <v-col cols="12">
+                <v-card> 
                     <v-data-table :headers="headers" :items="filteredVolunteers" multi-sort :headerProps="headerprops"
                         class="elevation-1 table-style" :loading="isLoading"
                         :loading-text="isLoading ? 'Loading... Please wait' : ''" @click:row="rowClick" :footer-props="{
-                                showFirstLastPage: true,
-                                firstIcon: 'mdi-arrow-collapse-left',
-                                lastIcon: 'mdi-arrow-collapse-right',
-                                prevIcon: 'mdi-minus',
-                                nextIcon: 'mdi-plus'
-                            }">
+                showFirstLastPage: true,
+                firstIcon: 'mdi-arrow-collapse-left',
+                lastIcon: 'mdi-arrow-collapse-right',
+                prevIcon: 'mdi-minus',
+                nextIcon: 'mdi-plus'
+            }">
 
                         <!-- Item slots -->
                         <template v-slot:item.num="{ index }">
@@ -61,11 +69,18 @@
                             </v-alert>
                         </v-col>
                         <v-col cols="12">
-                            <small class="mr-1 mb-1">KTP/SIM</small>
-                            <v-icon color="green"
-                                v-if="selectedItem.attachmentName != ''">mdi-check-circle-outline</v-icon>
-                            <v-icon color="grey" v-else>mdi-close-circle-outline</v-icon>
-                            <v-img max-width="500" :src="imageLink"></v-img>
+                            <small class="mr-1 mb-1">KTP/SIM <v-icon color="green"
+                                    v-if="selectedItem.attachmentName != ''">mdi-check-circle-outline</v-icon></small>
+                            <a v-if="selectedItem.attachmentName != ''" :href="imageLink" target="_blank">Lihat ukuran
+                                penuh</a>
+                            <v-img class="col-12" v-if="selectedItem.attachmentName" @load="loadingImg = false"
+                                :src="imageLink" alt="Example Image" :max-width="400" width="300">
+                                <template v-slot:placeholder>
+                                    <v-row class="fill-height ma-0" align="center" justify="center">
+                                        <v-progress-circular indeterminate color="cyan darken-2"></v-progress-circular>
+                                    </v-row>
+                                </template>
+                            </v-img>
                         </v-col>
                         <v-col cols="12">
                             <h3>1. Data Diri</h3>
@@ -75,10 +90,7 @@
                             <p><strong>Alamat:</strong> {{ selectedItem.address }}</p>
                             <p><strong>Jenis Kelamin:</strong> {{ selectedItem.gender }}</p>
                             <p><strong>Tanggal Lahir:</strong> {{ selectedItem.birthDate }}</p>
-                            <p v-if="selectedItem.imageLink != ''">
-                                <strong>Gambar KTP/SIM:</strong>
-                                <img :src="selectedItem.imageLink" width="200">
-                            </p>
+
                         </v-col>
 
                         <!-- Kolom untuk Alamat Tinggal -->
@@ -140,6 +152,7 @@ export default {
     },
     data() {
         return {
+            loadingImg: true,
             color: "grey darken-2",
             listCountData: {
                 totalRelawanActive: 0,

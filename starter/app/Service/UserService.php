@@ -85,5 +85,8 @@ class UserService implements IUserService
     {
         return $this->userRepository->getRelawanStatistic();
     }
-
+    public function updateStatus(PersonModel $payload)
+    {
+        return $this->userRepository->updateStatus($payload);
+    }
 }

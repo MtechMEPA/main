@@ -118,16 +118,14 @@ export default {
                 const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
                 const users = userDetailsRes.data.data;
                 var userDetails = users.filter(volunteer => volunteer.volunteerID === this.nomorAnggota.toString().toUpperCase().replace(/\s+/g, ''));
-                console.log(userDetails);
+
                 await this.$store.dispatch('setUserData', { users });
                 await this.$store.dispatch('setUserLogin', { userLogin: userDetails[0] });
 
-
-
                 var message = '';
-                var color = "";
+                var color = '';
+                var title = 'Info';
                 if (userDetails[0].status == "inactive" && userDetails[0].role == "relawan") {
-                    // this.$router.push('/completion-relawan').catch(() => { });
                     message = "Akun anda belum diaktifkan oleh pengurus pusat. Silahkan lengkapi data anda terlebih dahulu setelah itu hubungi pengurus untuk diaktifkan";
                     color = "orange darken-2";
                 } else if (userDetails[0].status == "inactive" && userDetails[0].role == "pemilih") {
@@ -135,13 +133,14 @@ export default {
                     message = "Akun anda belum diaktifkan oleh koordinator relawan anda. Silahkan lengkapi data anda terlebih dahulu setelah itu hubungi koordinator relawan untuk diaktifkan";
                     color = "orange darken-2";
                 } else {
-                    message = 'Silahkan menggunakan menu yang ada sebagaimana mestinya';
+                    message = 'Berhasil login, anda masuk sebagai ' + userDetails[0].role.toString().toUpperCase();
                     color = "cyan darken-2";
+                    title = 'Sukses';
                 }
 
                 await this.$store.dispatch('setDialog', {
                     isShowDialog: true,
-                    title: '[Perhatian]',
+                    title: title,
                     details: message,
                     color: color
                 });

@@ -30,7 +30,7 @@ export default {
                 await axios.post(process.env.VUE_APP_SERVICE_URL + "auth/logout");
                 await this.$store.dispatch('setDialog', {
                     isShowDialog: true,
-                    title: 'Berhasil Logout',
+                    title: 'Sukses',
                     details: 'Berhasil logout',
                     color: "cyan darken-2"
                 });
