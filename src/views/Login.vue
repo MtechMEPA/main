@@ -43,18 +43,22 @@
             </v-card-actions>
 
             <v-card-subtitle class="text-center">
-                <p>*Jika belum punya akun, silahkan daftar dengan klik link dibawah ini <br /> Pilih
+                <p>*Jika belum punya akun, silahkan daftar dengan klik link dibawah ini
+                    <!-- <br /> Pilih
                     <strong>RELAWAN</strong> jika anda koordinator Lapangan <br /> Pilih
-                    <strong>PEMILIH</strong> jika anda pendukung Meki Nawipa - MEPA
+                    <strong>PEMILIH</strong> jika anda pendukung Meki Nawipa - MEPA -->
                 </p>
                 <v-divider></v-divider>
-                <p> <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
+                <p>
+                    <!-- <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
                         @click="navigateTo('registration-relawan')">
                         Relawan
-                    </v-btn> atau <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
+                    </v-btn> atau  -->
+                    <v-btn text class="mr-4 white--text ml-2" color="cyan darken-2"
                         @click="navigateTo('registration-pemilih')">
-                        Pemilih
-                    </v-btn></p>
+                        Daftar Sebagai Pemillih MEPA
+                    </v-btn>
+                </p>
             </v-card-subtitle>
         </v-card>
     </form>
