@@ -134,9 +134,9 @@
                     <v-card-actions>
 
                         <v-btn v-if="selectedItem.status == 'inactive'" color="green" dark
-                            @click="toggleStatus('Aktif')">Aktifkan?</v-btn>
+                            @click="toggleStatus('active')">Aktifkan?</v-btn>
                         <v-btn v-if="selectedItem.status == 'active'" color="orange" dark
-                            @click="toggleStatus('Tidak Aktif')">Non
+                            @click="toggleStatus('inactive')">Non
                             Aktifkan?</v-btn>
                         <v-spacer></v-spacer>
                         <v-btn text @click="dialog = false">Close </v-btn>
@@ -189,9 +189,9 @@ export default {
                 { text: 'KTP/SIM', value: 'attachmentName' },
                 { text: 'Verifikasi', value: 'statusName' },
             ],
-            dialog: false, // Untuk mengontrol tampilan dialog
-            selectedItem: {}, // Data baris yang dipilih
-            imageLink: '' // Link untuk gambar
+            dialog: false,
+            selectedItem: {},
+            imageLink: '',
         }
     },
     computed: {
@@ -263,14 +263,30 @@ export default {
         },
         async toggleStatus(status) {
             try {
-                const updatedItem = { ...this.selectedItem, statusName: status };
+                const updatedItem = { volunteerID: this.selectedItem.volunteerID, status: status };
                 // Ganti URL dengan endpoint yang sesuai untuk memperbarui status
-                await axios.post(process.env.VUE_APP_SERVICE_URL + "update/status", updatedItem);
+                await axios.post(process.env.VUE_APP_SERVICE_URL + "user/statusupdate", updatedItem);
                 // Perbarui data lokal
                 this.selectedItem.statusName = status;
-                this.dialog = false; // Tutup dialog setelah memperbarui status
+                await this.getVolunteers();
+                await this.$store.dispatch('setDialog', {
+                    isShowDialog: true,
+                    title: "Sukses",
+                    details: "Data berhasil tersimpan",
+                    color: "cyan darken-2"
+
+                });
             } catch (error) {
                 console.log(error);
+                await this.$store.dispatch('setDialog', {
+                    isShowDialog: true,
+                    title: "Error",
+                    details: error,
+                    color: "red darken-2"
+
+                });
+            } finally {
+                this.dialog = false; // Tutup dialog setelah memperbarui status
             }
         }
     },
