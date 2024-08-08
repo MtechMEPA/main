@@ -34,7 +34,7 @@ const routes = [
   {
     path: '/registration-relawan',
     name: 'Registration Relawan',
-    component: RegistrationRelawan
+    component: Notfound
   },
   {
     path: '/registration-pemilih',
@@ -95,7 +95,7 @@ const routes = [
     component: Notfound,
     beforeEnter: (to, from, next) => {
       next({
-        path: '/login',
+        path: '/',
         replace: true
       });
     }
