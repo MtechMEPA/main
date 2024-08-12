@@ -9,7 +9,7 @@
                             <v-toolbar-title>Data Relawan <v-icon
                                     class="text-h4 text--disabled">mdi-account-multiple-outline</v-icon></v-toolbar-title>
                         </v-col>
-                        
+
                         <v-col cols="6">
 
                             <v-text-field v-model="search" label="Pencarian" outlined dense append-icon="mdi-magnify"
@@ -20,7 +20,7 @@
             </v-col>
             <!-- Tabel untuk menampilkan data volunteer -->
             <v-col cols="12">
-                <v-card> 
+                <v-card>
                     <v-data-table :headers="headers" :items="filteredVolunteers" multi-sort :headerProps="headerprops"
                         class="elevation-1 table-style" :loading="isLoading"
                         :loading-text="isLoading ? 'Loading... Please wait' : ''" @click:row="rowClick" :footer-props="{
@@ -118,9 +118,10 @@
                     <v-card-actions>
 
                         <v-btn v-if="selectedItem.status == 'inactive'" color="green" dark
-                            @click="toggleStatus('Aktif')">Aktifkan <v-icon>mdi-check-circle-outline</v-icon></v-btn>
-                        <v-btn v-if="selectedItem.status == 'active'" color="red" dark
-                            @click="toggleStatus('Tidak Aktif')">Tidak Aktif</v-btn>
+                            @click="toggleStatus('active')">Aktifkan?</v-btn>
+                        <v-btn v-if="selectedItem.status == 'active'" color="orange" dark
+                            @click="toggleStatus('inactive')">Non
+                            Aktifkan?</v-btn>
                         <v-spacer></v-spacer>
                         <v-btn text @click="dialog = false">Close </v-btn>
                     </v-card-actions>
@@ -215,6 +216,34 @@ export default {
                 this.hideOverlayLoading();
             }
         },
+        async toggleStatus(status) {
+            try {
+                const updatedItem = { volunteerID: this.selectedItem.volunteerID, status: status };
+                // Ganti URL dengan endpoint yang sesuai untuk memperbarui status
+                await axios.post(process.env.VUE_APP_SERVICE_URL + "user/statusupdate", updatedItem);
+                // Perbarui data lokal
+                this.selectedItem.statusName = status;
+                await this.getVolunteers();
+                await this.$store.dispatch('setDialog', {
+                    isShowDialog: true,
+                    title: "Sukses",
+                    details: "Data berhasil tersimpan",
+                    color: "cyan darken-2"
+
+                });
+            } catch (error) {
+                console.log(error);
+                await this.$store.dispatch('setDialog', {
+                    isShowDialog: true,
+                    title: "Error",
+                    details: error,
+                    color: "red darken-2"
+
+                });
+            } finally {
+                this.dialog = false; // Tutup dialog setelah memperbarui status
+            }
+        }
     },
     async created() {
         await this.getVolunteers(); // Fetch volunteer data on created

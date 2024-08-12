@@ -254,7 +254,7 @@ export default {
                 // Jika login berhasil, panggil API search/user
                 const userDetailsParam = { "role": 'relawan' };
                 const userDetailsRes = await axios.post(process.env.VUE_APP_SERVICE_URL + "search/userByID", userDetailsParam);
-                this.volunteerRelawan = userDetailsRes.data.data;
+                this.volunteerRelawan = userDetailsRes.data.data.filter(val => val.status == 'active');
             } catch (error) {
                 console.log(error);
             } finally {
