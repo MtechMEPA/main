@@ -1,11 +1,11 @@
 <template>
     <v-container fluid>
-        <v-row>
+ 
 
             <!-- Summary Cards -->
             <v-row>
                 <!-- Relawan Card -->
-                <v-col cols="12" md="4" class="mb-4">
+                <v-col cols="12" md="4">
                     <v-card class="mx-auto">
                         <v-list-item two-line>
                             <v-list-item-content>
@@ -35,7 +35,7 @@
                 </v-col>
 
                 <!-- Pemilih Card -->
-                <v-col cols="12" md="4" class="mb-4">
+                <v-col cols="12" md="4">
                     <v-card class="mx-auto">
                         <v-list-item two-line>
                             <v-list-item-content>
@@ -62,7 +62,7 @@
                 </v-col>
 
                 <!-- Total Card -->
-                <v-col cols="12" md="4" class="mb-4">
+                <v-col cols="12" md="4">
                     <v-card class="mx-auto">
                         <v-list-item two-line>
                             <v-list-item-content>
@@ -88,7 +88,7 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
-            </v-row>
+           
 
             <!-- Tabel untuk menampilkan data volunteer -->
             <v-col cols="12">
