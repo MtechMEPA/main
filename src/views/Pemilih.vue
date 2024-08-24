@@ -28,9 +28,14 @@
                 </v-card>
             </v-col>
 
-
+            <v-col cols="12" v-if="filteredVolunteers.length == 0">
+                <v-alert color="cyan lighten-2">
+                    <strong>Data tidak ditemukan</strong> <br>
+                    Silahkan Pilih Relawan Koordinator untuk melihat detail data pemilihnya
+                </v-alert>
+            </v-col>
             <!-- Tabel untuk menampilkan data volunteer -->
-            <v-col cols="12">
+            <v-col cols="12" v-else>
                 <v-card>
 
                     <v-data-table :headers="headers" :items="filteredVolunteers" multi-sort :header-props="headerprops"
@@ -198,25 +203,25 @@ export default {
         ...mapGetters(['isLoggedIn', 'username', 'userData', 'token', 'regencies', 'isOverlayLoading', 'userLogin']),
         filteredVolunteers() {
 
-            let filtered = this.volunteers;
+            let filtered = (this.userLogin.role == 'relawan' ? this.volunteers : []);
             console.log(this.volunteerRelawanValue);
             // Filter by volunteerRelawanValue
             if (this.volunteerRelawanValue) {
-                filtered = filtered.filter(item => item.parent === this.volunteerRelawanValue);
-
+                filtered = this.volunteers.filter(item => item.parent === this.volunteerRelawanValue);
+                // Filter by search term
+                if (this.search && this.search.length > 3) {
+                    console.log(this.search);
+                    const searchTerm = this.search.toLowerCase();
+                    filtered = filtered.filter(item =>
+                        item.volunteerID.toLowerCase().includes(searchTerm) ||
+                        item.name.toLowerCase().includes(searchTerm) ||
+                        item.statusName.toLowerCase().includes(searchTerm)
+                        // item.districtName ? item.districtName.toLowerCase().includes(searchTerm) : ''
+                    );
+                }
             }
 
-            // Filter by search term
-            if (this.search && this.search.length > 3) {
-                console.log(this.search);
-                const searchTerm = this.search.toLowerCase();
-                filtered = filtered.filter(item =>
-                    item.volunteerID.toLowerCase().includes(searchTerm) ||
-                    item.name.toLowerCase().includes(searchTerm) ||
-                    item.statusName.toLowerCase().includes(searchTerm)
-                    // item.districtName ? item.districtName.toLowerCase().includes(searchTerm) : ''
-                );
-            }
+
 
 
 
